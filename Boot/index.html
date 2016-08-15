@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Boot: A Whirlwind Tour</title>
+<meta name="author" content="(Jethro Kuan)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="../reveal.js/css/reveal.css"/>
+<link rel="stylesheet" href="../reveal.js/css/theme/jethro.css" id="theme"/>
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = '../reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1>Boot: A Whirlwind Tour</h1>
+<h2>Jethro Kuan</h2>
+<h2><a href="mailto:jethrokuan95@gmail.com">jethrokuan95@gmail.com</a></h2>
+<h2></h2>
+</section>
+
+<section>
+<section id="slide-orgheadline3">
+<h2 id="orgheadline3">About Me</h2>
+<ul>
+<li class="fragment appear">~ 6 months of Clojure experience</li>
+<li class="fragment appear">Intern at Tinkertanker</li>
+<li class="fragment appear">Use Clojure to develop Slack integrations</li>
+<li class="fragment appear">Slides can be found at <a href="http://tk.sg/boot">http://tk.sg/boot</a></li>
+
+</ul>
+</section>
+<section id="slide-orgheadline1">
+<h3 id="orgheadline1">Disclaimer</h3>
+</section>
+<section id="slide-orgheadline2">
+<h3 id="orgheadline2">Some Context&#x2026;</h3>
+<aside class="notes">
+<ul>
+<li>First app I was commissioned to make was a todo app within Slack.
+<ul>
+<li>Settled on first libraries I came across: Compojure/Ring/Jetty</li>
+
+</ul></li>
+<li>Picked Boot initially (2.4)</li>
+<li>Boot was too hard for me because I didn't really understand the JVM back then.</li>
+<li>Decided to just download lein and run `lein new compojure todo`</li>
+
+</ul>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline5">
+<h2 id="orgheadline5">Lein</h2>
+<div class="org-src-container">
+
+<pre  class="src src-clojure"><span style="color: #458588;">(</span><span style="color: #fb4934;">defproject</span> <span style="color: #fabd2f;">org.example/sample</span> <span style="color: #b8bb26;">"1.0.0-SNAPSHOT"</span> <span style="color: #7c6f64;">; version "1.0.0-SNAPSHOT"</span>
+  <span style="color: #d3869b;">:description</span> <span style="color: #b8bb26;">"A sample project"</span>
+  <span style="color: #d3869b;">:url</span> <span style="color: #b8bb26;">"http://example.org/sample-clojure-project"</span>
+  <span style="color: #d3869b;">:license</span> <span style="color: #b16286;">{</span><span style="color: #d3869b;">:name</span> <span style="color: #b8bb26;">"Eclipse Public License - v 1.0"</span>
+            <span style="color: #d3869b;">:url</span> <span style="color: #b8bb26;">"http://www.eclipse.org/legal/epl-v10.html"</span>
+            <span style="color: #d3869b;">:distribution</span> <span style="color: #d3869b;">:repo</span>
+            <span style="color: #d3869b;">:comments</span> <span style="color: #b8bb26;">"same as Clojure"</span><span style="color: #b16286;">}</span>
+  <span style="color: #d3869b;">:min-lein-version</span> <span style="color: #b8bb26;">"2.0.0"</span>
+  <span style="color: #d3869b;">:dependencies</span> <span style="color: #b16286;">[</span><span style="color: #8ec07c;">[</span><span style="color: #d3869b;">org.clojure</span><span style="color: #fdf4c1; background-color: #282828;">/</span>clojure <span style="color: #b8bb26;">"1.3.0"</span><span style="color: #8ec07c;">]</span>
+                 <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">org.jclouds</span><span style="color: #fdf4c1; background-color: #282828;">/</span>jclouds <span style="color: #b8bb26;">"1.0"</span> <span style="color: #d3869b;">:classifier</span> <span style="color: #b8bb26;">"jdk15"</span><span style="color: #8ec07c;">]</span>
+                 <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">net.sf.ehcache</span><span style="color: #fdf4c1; background-color: #282828;">/</span>ehcache <span style="color: #b8bb26;">"2.3.1"</span> <span style="color: #d3869b;">:extension</span> <span style="color: #b8bb26;">"pom"</span><span style="color: #8ec07c;">]</span>
+                 <span style="color: #8ec07c;">[</span>log4j <span style="color: #b8bb26;">"1.2.15"</span> <span style="color: #d3869b;">:exclusions</span> <span style="color: #d65d0e;">[</span><span style="color: #458588;">[</span><span style="color: #d3869b;">javax.mail</span><span style="color: #fdf4c1; background-color: #282828;">/</span>mail <span style="color: #d3869b;">:extension</span> <span style="color: #b8bb26;">"jar"</span><span style="color: #458588;">]</span>
+                                              <span style="color: #458588;">[</span><span style="color: #d3869b;">javax.jms</span><span style="color: #fdf4c1; background-color: #282828;">/</span>jms <span style="color: #d3869b;">:classifier</span> <span style="color: #b8bb26;">"*"</span><span style="color: #458588;">]</span>
+                                              <span style="color: #d3869b;">com.sun.jdmk</span><span style="color: #fdf4c1; background-color: #282828;">/</span>jmxtools
+                                              <span style="color: #d3869b;">com.sun.jmx</span><span style="color: #fdf4c1; background-color: #282828;">/</span>jmxri<span style="color: #d65d0e;">]</span><span style="color: #8ec07c;">]</span>
+                 <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">org.lwjgl.lwjgl</span><span style="color: #fdf4c1; background-color: #282828;">/</span>lwjgl <span style="color: #b8bb26;">"2.8.5"</span><span style="color: #8ec07c;">]</span>
+                 <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">org.lwjgl.lwjgl</span><span style="color: #fdf4c1; background-color: #282828;">/</span>lwjgl-platform <span style="color: #b8bb26;">"2.8.5"</span>
+                  <span style="color: #d3869b;">:classifier</span> <span style="color: #b8bb26;">"natives-osx"</span>
+                  <span style="color: #d3869b;">:native-prefix</span> <span style="color: #b8bb26;">""</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:pedantic?</span> <span style="color: #d3869b;">:abort</span>
+  <span style="color: #d3869b;">:exclusions</span> <span style="color: #b16286;">[</span><span style="color: #d3869b;">org.apache.poi</span><span style="color: #fdf4c1; background-color: #282828;">/</span>poi
+               <span style="color: #d3869b;">org.apache.poi</span><span style="color: #fdf4c1; background-color: #282828;">/</span>poi-ooxml<span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:plugins</span> <span style="color: #b16286;">[</span><span style="color: #8ec07c;">[</span>lein-pprint <span style="color: #b8bb26;">"1.1.1"</span><span style="color: #8ec07c;">]</span>
+            <span style="color: #8ec07c;">[</span>lein-assoc <span style="color: #b8bb26;">"0.1.0"</span><span style="color: #8ec07c;">]</span>
+            <span style="color: #8ec07c;">[</span>s3-wagon-private <span style="color: #b8bb26;">"1.1.1"</span><span style="color: #8ec07c;">]</span>
+            <span style="color: #8ec07c;">[</span>lein-foo <span style="color: #b8bb26;">"0.0.1"</span> <span style="color: #d3869b;">:hooks</span> <span style="color: #d3869b;">false</span><span style="color: #8ec07c;">]</span>
+            <span style="color: #8ec07c;">[</span>lein-bar <span style="color: #b8bb26;">"0.0.1"</span> <span style="color: #d3869b;">:middleware</span> <span style="color: #d3869b;">false</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:repositories</span> <span style="color: #b16286;">[</span><span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"java.net"</span> <span style="color: #b8bb26;">"http://download.java.net/maven/2"</span><span style="color: #8ec07c;">]</span>
+                 <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"sonatype"</span> <span style="color: #d65d0e;">{</span><span style="color: #d3869b;">:url</span> <span style="color: #b8bb26;">"http://oss.sonatype.org/content/repositories/releases"</span>                         
+                              <span style="color: #d3869b;">:snapshots</span> <span style="color: #d3869b;">false</span>
+                              <span style="color: #d3869b;">:sign-releases</span> <span style="color: #d3869b;">false</span>
+                              <span style="color: #d3869b;">:checksum</span> <span style="color: #d3869b;">:fail</span>
+                              <span style="color: #d3869b;">:update</span> <span style="color: #d3869b;">:always</span>
+                              <span style="color: #d3869b;">:releases</span> <span style="color: #458588;">{</span><span style="color: #d3869b;">:checksum</span> <span style="color: #d3869b;">:fail</span> <span style="color: #d3869b;">:update</span> <span style="color: #d3869b;">:always</span><span style="color: #458588;">}</span><span style="color: #d65d0e;">}</span><span style="color: #8ec07c;">]</span>
+                 <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"snapshots"</span> <span style="color: #b8bb26;">"http://blueant.com/archiva/snapshots"</span><span style="color: #8ec07c;">]</span>
+                 <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"releases"</span> <span style="color: #d65d0e;">{</span><span style="color: #d3869b;">:url</span> <span style="color: #b8bb26;">"http://blueant.com/archiva/internal"</span>
+                              <span style="color: #d3869b;">:username</span> <span style="color: #b8bb26;">"milgrim"</span> <span style="color: #d3869b;">:password</span> <span style="color: #d3869b;">:env</span><span style="color: #d65d0e;">}</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:mirrors</span> <span style="color: #b16286;">{</span><span style="color: #b8bb26;">"central"</span> <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:name</span> <span style="color: #b8bb26;">"central"</span>
+                       <span style="color: #d3869b;">:url</span> <span style="color: #b8bb26;">"http://mirrors.ibiblio.org/pub/mirrors/maven2"</span><span style="color: #8ec07c;">}</span>
+            #<span style="color: #b8bb26;">"clojars"</span> <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:name</span> <span style="color: #b8bb26;">"Internal nexus"</span>
+                        <span style="color: #d3869b;">:url</span> <span style="color: #b8bb26;">"http://mvn.local/nexus/releases"</span>
+                        <span style="color: #d3869b;">:repo-manager</span> <span style="color: #d3869b;">true</span><span style="color: #8ec07c;">}</span><span style="color: #b16286;">}</span>
+  <span style="color: #d3869b;">:local-repo</span> <span style="color: #b8bb26;">"local-m2"</span>
+  <span style="color: #d3869b;">:update</span> <span style="color: #d3869b;">:always</span>
+  <span style="color: #d3869b;">:checksum</span> <span style="color: #d3869b;">:fail</span>
+  <span style="color: #d3869b;">:offline?</span> <span style="color: #d3869b;">true</span>
+  <span style="color: #d3869b;">:deploy-repositories</span> <span style="color: #b16286;">[</span><span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"releases"</span> <span style="color: #d65d0e;">{</span><span style="color: #d3869b;">:url</span> <span style="color: #b8bb26;">"http://blueant.com/archiva/internal/releases"</span>
+                                     <span style="color: #d3869b;">:signing</span> <span style="color: #458588;">{</span><span style="color: #d3869b;">:gpg-key</span> <span style="color: #b8bb26;">"0xAB123456"</span><span style="color: #458588;">}</span><span style="color: #d65d0e;">}</span><span style="color: #8ec07c;">]</span>
+                        <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"snapshots"</span> <span style="color: #b8bb26;">"http://blueant.com/archiva/internal/snapshots"</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:signing</span> <span style="color: #b16286;">{</span><span style="color: #d3869b;">:gpg-key</span> <span style="color: #b8bb26;">"root@eruditorum.org"</span><span style="color: #b16286;">}</span>
+  <span style="color: #d3869b;">:certificates</span> <span style="color: #b16286;">[</span><span style="color: #b8bb26;">"blueant.pem"</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:profiles</span> <span style="color: #b16286;">{</span><span style="color: #d3869b;">:debug</span> <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:debug</span> <span style="color: #d3869b;">true</span>
+                     <span style="color: #d3869b;">:injections</span> <span style="color: #d65d0e;">[</span><span style="color: #458588;">(</span>prn <span style="color: #b16286;">(</span>into <span style="color: #8ec07c;">{}</span> <span style="color: #8ec07c;">(</span><span style="color: #d3869b;">System</span><span style="color: #fdf4c1; background-color: #282828;">/</span><span style="color: #fe8019;">getProperties</span><span style="color: #8ec07c;">)</span><span style="color: #b16286;">)</span><span style="color: #458588;">)</span><span style="color: #d65d0e;">]</span><span style="color: #8ec07c;">}</span>
+             <span style="color: #d3869b;">:1.4</span> <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:dependencies</span> <span style="color: #d65d0e;">[</span><span style="color: #458588;">[</span><span style="color: #d3869b;">org.clojure</span><span style="color: #fdf4c1; background-color: #282828;">/</span>clojure <span style="color: #b8bb26;">"1.4.0"</span><span style="color: #458588;">]</span><span style="color: #d65d0e;">]</span><span style="color: #8ec07c;">}</span>
+             <span style="color: #d3869b;">:1.5</span> <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:dependencies</span> <span style="color: #d65d0e;">[</span><span style="color: #458588;">[</span><span style="color: #d3869b;">org.clojure</span><span style="color: #fdf4c1; background-color: #282828;">/</span>clojure <span style="color: #b8bb26;">"1.5.0"</span><span style="color: #458588;">]</span><span style="color: #d65d0e;">]</span><span style="color: #8ec07c;">}</span>
+             <span style="color: #d3869b;">:dev</span> <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:resource-paths</span> <span style="color: #d65d0e;">[</span><span style="color: #b8bb26;">"dummy-data"</span><span style="color: #d65d0e;">]</span>
+                   <span style="color: #d3869b;">:dependencies</span> <span style="color: #d65d0e;">[</span><span style="color: #458588;">[</span>clj-stacktrace <span style="color: #b8bb26;">"0.2.4"</span><span style="color: #458588;">]</span><span style="color: #d65d0e;">]</span><span style="color: #8ec07c;">}</span>
+             <span style="color: #d3869b;">:uberjar</span> <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:aot</span> <span style="color: #d3869b;">:all</span><span style="color: #8ec07c;">}</span>
+             <span style="color: #d3869b;">:repl</span> <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:plugins</span> <span style="color: #d65d0e;">[</span><span style="color: #458588;">[</span><span style="color: #d3869b;">cider</span><span style="color: #fdf4c1; background-color: #282828;">/</span>cider-nrepl <span style="color: #b8bb26;">"0.7.1"</span><span style="color: #458588;">]</span><span style="color: #d65d0e;">]</span><span style="color: #8ec07c;">}</span><span style="color: #b16286;">}</span>
+  <span style="color: #d3869b;">:hooks</span> <span style="color: #b16286;">[</span><span style="color: #d3869b;">leiningen.hooks.difftest</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:middleware</span> <span style="color: #b16286;">[</span><span style="color: #d3869b;">lein-xml.plugin</span><span style="color: #fdf4c1; background-color: #282828;">/</span>middleware<span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:implicit-middleware</span> <span style="color: #d3869b;">false</span>
+  <span style="color: #d3869b;">:implicit-hooks</span> <span style="color: #d3869b;">false</span>
+
+  <span style="color: #d3869b;">:main</span> <span style="color: #d3869b;">my.service.runner</span>
+  <span style="color: #d3869b;">:aliases</span> <span style="color: #b16286;">{</span><span style="color: #b8bb26;">"launch"</span> <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"run"</span> <span style="color: #b8bb26;">"-m"</span> <span style="color: #b8bb26;">"myproject.main"</span><span style="color: #8ec07c;">]</span>
+            <span style="color: #b8bb26;">"launch-version"</span> <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"run"</span> <span style="color: #b8bb26;">"-m"</span> <span style="color: #b8bb26;">"myproject.main"</span> <span style="color: #d3869b;">:</span><span style="color: #d3869b;">project</span><span style="color: #fdf4c1; background-color: #282828;">/</span><span style="color: #d3869b;">version</span><span style="color: #8ec07c;">]</span>
+            <span style="color: #b8bb26;">"dumbrepl"</span> <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"trampoline"</span> <span style="color: #b8bb26;">"run"</span> <span style="color: #b8bb26;">"-m"</span> <span style="color: #b8bb26;">"clojure.main/main"</span><span style="color: #8ec07c;">]</span>
+            <span style="color: #b8bb26;">"go"</span> ^<span style="color: #d3869b;">:pass-through-help</span> <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"run"</span> <span style="color: #b8bb26;">"-m"</span><span style="color: #8ec07c;">]</span>
+            <span style="color: #b8bb26;">"deploy!"</span> ^<span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:doc</span> <span style="color: #b8bb26;">"Recompile sources, then deploy if tests succeed."</span><span style="color: #8ec07c;">}</span>
+            <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"do"</span> <span style="color: #b8bb26;">"clean"</span> <span style="color: #d65d0e;">[</span><span style="color: #b8bb26;">"test"</span> <span style="color: #b8bb26;">"</span><span style="color: #b8bb26;">:integration</span><span style="color: #b8bb26;">"</span><span style="color: #d65d0e;">]</span> <span style="color: #d65d0e;">[</span><span style="color: #b8bb26;">"deploy"</span> <span style="color: #b8bb26;">"clojars"</span><span style="color: #d65d0e;">]</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">}</span>
+  <span style="color: #d3869b;">:release-tasks</span> <span style="color: #b16286;">[</span><span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"vcs"</span> <span style="color: #b8bb26;">"assert-committed"</span><span style="color: #8ec07c;">]</span>
+                  <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"change"</span> <span style="color: #b8bb26;">"version"</span>
+                   <span style="color: #b8bb26;">"leiningen.release/bump-version"</span> <span style="color: #b8bb26;">"release"</span><span style="color: #8ec07c;">]</span>
+                  <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"vcs"</span> <span style="color: #b8bb26;">"commit"</span><span style="color: #8ec07c;">]</span>
+                  <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"vcs"</span> <span style="color: #b8bb26;">"tag"</span><span style="color: #8ec07c;">]</span>
+                  <span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"deploy"</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:prep-tasks</span> <span style="color: #b16286;">[</span><span style="color: #8ec07c;">[</span><span style="color: #b8bb26;">"protobuf"</span> <span style="color: #b8bb26;">"compile"</span><span style="color: #8ec07c;">]</span> <span style="color: #b8bb26;">"javac"</span> <span style="color: #b8bb26;">"compile"</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:aot</span> <span style="color: #b16286;">[</span><span style="color: #d3869b;">org.example.sample</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:injections</span> <span style="color: #b16286;">[</span><span style="color: #8ec07c;">(</span>require '<span style="color: #d3869b;">clojure.pprint</span><span style="color: #8ec07c;">)</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:java-agents</span> <span style="color: #b16286;">[</span><span style="color: #8ec07c;">[</span>nodisassemble <span style="color: #b8bb26;">"0.1.1"</span> <span style="color: #d3869b;">:options</span> <span style="color: #b8bb26;">"extra"</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:javac-options</span> <span style="color: #b16286;">[</span><span style="color: #b8bb26;">"-target"</span> <span style="color: #b8bb26;">"1.6"</span> <span style="color: #b8bb26;">"-source"</span> <span style="color: #b8bb26;">"1.6"</span> <span style="color: #b8bb26;">"-Xlint:-options"</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:warn-on-reflection</span> <span style="color: #d3869b;">true</span>
+  <span style="color: #d3869b;">:global-vars</span> <span style="color: #b16286;">{</span><span style="color: #fe8019;">*warn-on-reflection*</span> <span style="color: #d3869b;">true</span>
+                <span style="color: #fe8019;">*assert*</span> <span style="color: #d3869b;">false</span><span style="color: #b16286;">}</span>
+  <span style="color: #d3869b;">:java-cmd</span> <span style="color: #b8bb26;">"/home/phil/bin/java1.7"</span>
+  <span style="color: #d3869b;">:jvm-opts</span> <span style="color: #b16286;">[</span><span style="color: #b8bb26;">"-Xmx1g"</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:eval-in</span> <span style="color: #d3869b;">:leiningen</span>
+  <span style="color: #d3869b;">:bootclasspath</span> <span style="color: #d3869b;">true</span>
+  <span style="color: #d3869b;">:source-paths</span> <span style="color: #b16286;">[</span><span style="color: #b8bb26;">"src"</span> <span style="color: #b8bb26;">"src/main/clojure"</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:java-source-paths</span> <span style="color: #b16286;">[</span><span style="color: #b8bb26;">"src/main/java"</span><span style="color: #b16286;">]</span>  <span style="color: #7c6f64;">; Java source is stored separately.</span>
+  <span style="color: #d3869b;">:test-paths</span> <span style="color: #b16286;">[</span><span style="color: #b8bb26;">"test"</span> <span style="color: #b8bb26;">"src/test/clojure"</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:resource-paths</span> <span style="color: #b16286;">[</span><span style="color: #b8bb26;">"src/main/resource"</span><span style="color: #b16286;">]</span> <span style="color: #7c6f64;">; Non-code files included in classpath/jar.</span>
+  <span style="color: #d3869b;">:target-path</span> <span style="color: #b8bb26;">"target/%s/"</span>
+  <span style="color: #d3869b;">:compile-path</span> <span style="color: #b8bb26;">"%s/classy-files"</span>
+  <span style="color: #d3869b;">:native-path</span> <span style="color: #b8bb26;">"%s/bits-n-stuff"</span>
+  <span style="color: #d3869b;">:clean-targets</span> <span style="color: #b16286;">[</span><span style="color: #d3869b;">:target-path</span> <span style="color: #d3869b;">:compile-path</span> <span style="color: #d3869b;">:foobar-paths</span>
+                  <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">:baz-config</span> <span style="color: #d3869b;">:qux-path</span><span style="color: #8ec07c;">]</span> <span style="color: #b8bb26;">"out"</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:clean-non-project-classes</span> <span style="color: #d3869b;">true</span>
+  <span style="color: #d3869b;">:checkout-deps-shares</span> <span style="color: #b16286;">[</span><span style="color: #d3869b;">:source-paths</span> <span style="color: #d3869b;">:test-paths</span>
+                         ~<span style="color: #8ec07c;">(</span><span style="color: #fb4934;">fn</span> <span style="color: #d65d0e;">[</span>p<span style="color: #d65d0e;">]</span> <span style="color: #d65d0e;">(</span>str <span style="color: #458588;">(</span><span style="color: #d3869b;">:root</span> p<span style="color: #458588;">)</span> <span style="color: #b8bb26;">"/lib/dev/*"</span><span style="color: #d65d0e;">)</span><span style="color: #8ec07c;">)</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:test-selectors</span> <span style="color: #b16286;">{</span><span style="color: #d3869b;">:default</span> <span style="color: #8ec07c;">(</span><span style="color: #fb4934;">fn</span> <span style="color: #d65d0e;">[</span>m<span style="color: #d65d0e;">]</span> <span style="color: #d65d0e;">(</span>not <span style="color: #458588;">(</span><span style="color: #fb4934;">or</span> <span style="color: #b16286;">(</span><span style="color: #d3869b;">:integration</span> m<span style="color: #b16286;">)</span> <span style="color: #b16286;">(</span><span style="color: #d3869b;">:regression</span> m<span style="color: #b16286;">)</span><span style="color: #458588;">)</span><span style="color: #d65d0e;">)</span><span style="color: #8ec07c;">)</span>
+                   <span style="color: #d3869b;">:integration</span> <span style="color: #d3869b;">:integration</span>
+                   <span style="color: #d3869b;">:regression</span> <span style="color: #d3869b;">:regression</span><span style="color: #b16286;">}</span>
+  <span style="color: #d3869b;">:monkeypatch-clojure-test</span> <span style="color: #d3869b;">false</span>
+  <span style="color: #d3869b;">:repl-options</span> <span style="color: #b16286;">{</span> <span style="color: #7c6f64;">;; </span><span style="color: #7c6f64;">Specify the string to print when prompting for input.</span>
+                 <span style="color: #7c6f64;">;; </span><span style="color: #7c6f64;">defaults to something like (fn [ns] (str *ns* "=&gt; "))</span>
+                 <span style="color: #d3869b;">:prompt</span> <span style="color: #8ec07c;">(</span><span style="color: #fb4934;">fn</span> <span style="color: #d65d0e;">[</span>ns<span style="color: #d65d0e;">]</span> <span style="color: #d65d0e;">(</span>str <span style="color: #b8bb26;">"your command for &lt;"</span> ns <span style="color: #b8bb26;">"&gt;, master? "</span> <span style="color: #d65d0e;">)</span><span style="color: #8ec07c;">)</span>
+                 <span style="color: #7c6f64;">;; </span><span style="color: #7c6f64;">What to print when the repl session starts.</span>
+                 <span style="color: #d3869b;">:welcome</span> <span style="color: #8ec07c;">(</span>println <span style="color: #b8bb26;">"Welcome to the magical world of the repl!"</span><span style="color: #8ec07c;">)</span>
+                 <span style="color: #d3869b;">:init-ns</span> <span style="color: #d3869b;">foo.bar</span>
+                 <span style="color: #d3869b;">:init</span> <span style="color: #8ec07c;">(</span>println <span style="color: #b8bb26;">"here we are in"</span> <span style="color: #fe8019;">*ns*</span><span style="color: #8ec07c;">)</span>
+                 <span style="color: #d3869b;">:caught</span> <span style="color: #d3869b;">clj-stacktrace.repl</span><span style="color: #fdf4c1; background-color: #282828;">/</span>pst+
+                 <span style="color: #d3869b;">:skip-default-init</span> <span style="color: #d3869b;">false</span>
+                 <span style="color: #d3869b;">:host</span> <span style="color: #b8bb26;">"0.0.0.0"</span>
+                 <span style="color: #d3869b;">:port</span> 4001
+                 <span style="color: #d3869b;">:timeout</span> 40000
+                 <span style="color: #d3869b;">:nrepl-handler</span> <span style="color: #8ec07c;">(</span><span style="color: #d3869b;">clojure.tools.nrepl.server</span><span style="color: #fdf4c1; background-color: #282828;">/</span><span style="color: #fb4934;">default-handler</span><span style="color: #8ec07c;">)</span>
+                 <span style="color: #d3869b;">:nrepl-middleware</span> <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">my.nrepl.thing</span><span style="color: #fdf4c1; background-color: #282828;">/</span>wrap-amazingness
+                                    <span style="color: #d65d0e;">(</span><span style="color: #fb4934;">fn</span> <span style="color: #458588;">[</span>handler<span style="color: #458588;">]</span>
+                                      <span style="color: #458588;">(</span><span style="color: #fb4934;">fn</span> <span style="color: #b16286;">[</span>&amp; args<span style="color: #b16286;">]</span>
+                                        <span style="color: #b16286;">(</span>prn <span style="color: #d3869b;">:middle</span> args<span style="color: #b16286;">)</span>
+                                        <span style="color: #b16286;">(</span>apply handler args<span style="color: #b16286;">)</span><span style="color: #458588;">)</span><span style="color: #d65d0e;">)</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">}</span>
+  <span style="color: #d3869b;">:jar-name</span> <span style="color: #b8bb26;">"sample.jar"</span>
+  <span style="color: #d3869b;">:uberjar-name</span> <span style="color: #b8bb26;">"sample-standalone.jar"</span>
+  <span style="color: #d3869b;">:omit-source</span> <span style="color: #d3869b;">true</span>
+  <span style="color: #d3869b;">:jar-exclusions</span> <span style="color: #b16286;">[</span>#<span style="color: #b8bb26;">"</span><span style="color: #b8bb26; font-weight: bold;">(?:</span><span style="color: #b8bb26;">^</span><span style="color: #b8bb26; font-weight: bold;">|</span><span style="color: #b8bb26;">/</span><span style="color: #b8bb26; font-weight: bold;">)</span><span style="color: #b8bb26;">.svn/"</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:uberjar-exclusions</span> <span style="color: #b16286;">[</span>#<span style="color: #b8bb26;">"META-INF/DUMMY.SF"</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:auto-clean</span> <span style="color: #d3869b;">false</span>
+  <span style="color: #d3869b;">:uberjar-merge-with</span> <span style="color: #b16286;">{</span>#<span style="color: #b8bb26;">"\.properties$"</span> <span style="color: #8ec07c;">[</span>slurp str spit<span style="color: #8ec07c;">]</span><span style="color: #b16286;">}</span>
+  <span style="color: #d3869b;">:filespecs</span> <span style="color: #b16286;">[</span><span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:type</span> <span style="color: #d3869b;">:path</span> <span style="color: #d3869b;">:path</span> <span style="color: #b8bb26;">"config/base.clj"</span><span style="color: #8ec07c;">}</span>
+              <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:type</span> <span style="color: #d3869b;">:paths</span> <span style="color: #d3869b;">:paths</span> <span style="color: #d65d0e;">[</span><span style="color: #b8bb26;">"config/web"</span> <span style="color: #b8bb26;">"config/cli"</span><span style="color: #d65d0e;">]</span><span style="color: #8ec07c;">}</span>
+              <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:type</span> <span style="color: #d3869b;">:bytes</span> <span style="color: #d3869b;">:path</span> <span style="color: #b8bb26;">"project.clj"</span>
+               <span style="color: #d3869b;">:bytes</span> ~<span style="color: #d65d0e;">(</span>slurp <span style="color: #b8bb26;">"project.clj"</span><span style="color: #d65d0e;">)</span><span style="color: #8ec07c;">}</span>
+              <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:type</span> <span style="color: #d3869b;">:fn</span> <span style="color: #d3869b;">:fn</span> <span style="color: #d65d0e;">(</span><span style="color: #fb4934;">fn</span> <span style="color: #458588;">[</span>p<span style="color: #458588;">]</span>
+                               <span style="color: #458588;">{</span><span style="color: #d3869b;">:type</span> <span style="color: #d3869b;">:bytes</span> <span style="color: #d3869b;">:path</span> <span style="color: #b8bb26;">"git-log"</span>
+                                <span style="color: #d3869b;">:bytes</span> <span style="color: #b16286;">(</span><span style="color: #d3869b;">:out</span> <span style="color: #8ec07c;">(</span><span style="color: #d3869b;">clojure.java.shell</span><span style="color: #fdf4c1; background-color: #282828;">/</span>sh
+                                              <span style="color: #b8bb26;">"git"</span> <span style="color: #b8bb26;">"log"</span> <span style="color: #b8bb26;">"-n"</span> <span style="color: #b8bb26;">"1"</span><span style="color: #8ec07c;">)</span><span style="color: #b16286;">)</span><span style="color: #458588;">}</span><span style="color: #d65d0e;">)</span><span style="color: #8ec07c;">}</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:manifest</span> <span style="color: #b16286;">{</span><span style="color: #b8bb26;">"Project-awesome-level"</span> <span style="color: #b8bb26;">"super-great"</span>
+             <span style="color: #b8bb26;">"Class-Path"</span> ~#<span style="color: #8ec07c;">(</span><span style="color: #d3869b;">clojure.string</span><span style="color: #fdf4c1; background-color: #282828;">/</span>join
+                             <span style="color: #b8bb26;">\space</span>
+                             <span style="color: #d65d0e;">(</span><span style="color: #d3869b;">leiningen.core.classpath</span><span style="color: #fdf4c1; background-color: #282828;">/</span>get-classpath <span style="color: #83a598;">%</span><span style="color: #d65d0e;">)</span><span style="color: #8ec07c;">)</span>
+             <span style="color: #d3869b;">:my-section-1</span> <span style="color: #8ec07c;">[</span><span style="color: #d65d0e;">[</span><span style="color: #b8bb26;">"MyKey1"</span> <span style="color: #b8bb26;">"MyValue1"</span><span style="color: #d65d0e;">]</span> <span style="color: #d65d0e;">[</span><span style="color: #b8bb26;">"MyKey2"</span> <span style="color: #b8bb26;">"MyValue2"</span><span style="color: #d65d0e;">]</span><span style="color: #8ec07c;">]</span>
+             <span style="color: #d3869b;">:my-section-2</span> <span style="color: #8ec07c;">{</span><span style="color: #b8bb26;">"MyKey3"</span> <span style="color: #b8bb26;">"MyValue3"</span> <span style="color: #b8bb26;">"MyKey4"</span> <span style="color: #b8bb26;">"MyValue4"</span><span style="color: #8ec07c;">}</span>
+             <span style="color: #b8bb26;">"Grunge-level"</span> <span style="color: #d3869b;">my.plugin</span><span style="color: #fdf4c1; background-color: #282828;">/</span>calculate-grunginess<span style="color: #b16286;">}</span>
+
+  <span style="color: #d3869b;">:pom-location</span> <span style="color: #b8bb26;">"target/"</span>
+  <span style="color: #d3869b;">:parent</span> <span style="color: #b16286;">[</span><span style="color: #d3869b;">org.example</span><span style="color: #fdf4c1; background-color: #282828;">/</span>parent <span style="color: #b8bb26;">"0.0.1"</span> <span style="color: #d3869b;">:relative-path</span> <span style="color: #b8bb26;">"../parent/pom.xml"</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:extensions</span> <span style="color: #b16286;">[</span><span style="color: #8ec07c;">[</span><span style="color: #d3869b;">org.apache.maven.wagon</span><span style="color: #fdf4c1; background-color: #282828;">/</span>wagon-webdav <span style="color: #b8bb26;">"1.0-beta-2"</span><span style="color: #8ec07c;">]</span>
+               <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">foo</span><span style="color: #fdf4c1; background-color: #282828;">/</span>bar-baz <span style="color: #b8bb26;">"1.0"</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:pom-plugins</span> <span style="color: #b16286;">[</span><span style="color: #8ec07c;">[</span><span style="color: #d3869b;">com.theoryinpractise</span><span style="color: #fdf4c1; background-color: #282828;">/</span>clojure-maven-plugin <span style="color: #b8bb26;">"1.3.13"</span>
+                 <span style="color: #d65d0e;">{</span><span style="color: #d3869b;">:configuration</span> <span style="color: #458588;">[</span><span style="color: #d3869b;">:sourceDirectories</span> <span style="color: #b16286;">[</span><span style="color: #d3869b;">:sourceDirectory</span> <span style="color: #b8bb26;">"src"</span><span style="color: #b16286;">]</span><span style="color: #458588;">]</span>
+                  <span style="color: #d3869b;">:extensions</span> <span style="color: #b8bb26;">"true"</span>
+                  <span style="color: #d3869b;">:executions</span> <span style="color: #458588;">(</span><span style="color: #b16286;">[</span><span style="color: #d3869b;">:execution</span> <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">:id</span> <span style="color: #b8bb26;">"echodir"</span><span style="color: #8ec07c;">]</span>
+                                <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">:goals</span> <span style="color: #d65d0e;">(</span><span style="color: #458588;">[</span><span style="color: #d3869b;">:goal</span> <span style="color: #b8bb26;">"run"</span><span style="color: #458588;">]</span><span style="color: #d65d0e;">)</span><span style="color: #8ec07c;">]</span>
+                                <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">:phase</span> <span style="color: #b8bb26;">"verify"</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">]</span><span style="color: #458588;">)</span><span style="color: #d65d0e;">}</span><span style="color: #8ec07c;">]</span>
+                <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">org.apache.tomcat.maven</span><span style="color: #fdf4c1; background-color: #282828;">/</span>tomcat7-maven-plugin <span style="color: #b8bb26;">"2.1"</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:scm</span> <span style="color: #b16286;">{</span><span style="color: #d3869b;">:name</span> <span style="color: #b8bb26;">"git"</span>
+        <span style="color: #d3869b;">:tag</span> <span style="color: #b8bb26;">"098afd745bcd"</span>
+        <span style="color: #d3869b;">:url</span> <span style="color: #b8bb26;">"http://127.0.0.1/git/my-project"</span>
+        <span style="color: #d3869b;">:dir</span> <span style="color: #b8bb26;">".."</span><span style="color: #b16286;">}</span>
+  <span style="color: #d3869b;">:pom-addition</span> <span style="color: #b16286;">[</span><span style="color: #d3869b;">:developers</span> <span style="color: #8ec07c;">[</span><span style="color: #d3869b;">:developer</span> <span style="color: #d65d0e;">{</span><span style="color: #d3869b;">:id</span> <span style="color: #b8bb26;">"benbit"</span><span style="color: #d65d0e;">}</span>
+                              <span style="color: #d65d0e;">[</span><span style="color: #d3869b;">:name</span> <span style="color: #b8bb26;">"Ben Bitdiddle"</span><span style="color: #d65d0e;">]</span>
+                              <span style="color: #d65d0e;">[</span><span style="color: #d3869b;">:url</span> <span style="color: #b8bb26;">"http://www.example.com/benjamin"</span><span style="color: #d65d0e;">]</span><span style="color: #8ec07c;">]</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:install-releases?</span> <span style="color: #d3869b;">false</span>
+  <span style="color: #d3869b;">:deploy-branches</span> <span style="color: #b16286;">[</span><span style="color: #b8bb26;">"master"</span><span style="color: #b16286;">]</span>
+  <span style="color: #d3869b;">:classifiers</span> <span style="color: #b16286;">{</span><span style="color: #d3869b;">:tests</span> <span style="color: #8ec07c;">{</span><span style="color: #d3869b;">:source-paths</span> ^<span style="color: #d3869b;">:replace</span> <span style="color: #d65d0e;">[</span><span style="color: #b8bb26;">"test"</span><span style="color: #d65d0e;">]</span><span style="color: #8ec07c;">}</span>
+                <span style="color: #d3869b;">:classy</span> <span style="color: #d3869b;">:my-profile</span><span style="color: #b16286;">}</span><span style="color: #458588;">)</span>
+</pre>
+</div>
+<aside class="notes">
+<ul>
+<li>Example lein project.clj file</li>
+<li>With a focus on project automation and declarative configuration, it gets out of your way and lets you focus on your code.</li>
+<li>This worked for a while until I started adding more complex stuff</li>
+
+</ul>
+
+</aside>
+</section>
+<section id="slide-orgheadline4">
+<h3 id="orgheadline4">Lein's Downfall</h3>
+<ul>
+<li class="fragment appear">Monolithic Plugins
+<ul>
+<li>Figwheel</li>
+<li>No composability</li>
+
+</ul></li>
+<li class="fragment appear">There are <b>no</b> general solutions to specific problems</li>
+<li class="fragment appear">Memory consumption
+<ul>
+<li>plugins fork JVM to load deps</li>
+
+</ul></li>
+<li class="fragment appear">Different implementations of plugins don't mix and match</li>
+<li class="fragment appear">The need for Lein clean</li>
+
+</ul>
+<aside class="notes">
+<p>
+The applications we build today are highly complex. Web applications may seem simple at first, but when you get to deploying them it's actually highly complex. Things like SCSS preprocessors, minifiers, etc. Build tools just can't keep up.
+</p>
+
+<p>
+Successful plugins tend to evolve into monolithic one.
+</p>
+
+<p>
+Reason to use Clojure - reduces complexity. Yet the build cycle Lein introduces is inherently complex, because it tries to introduce a general solution to a specific problem. Opaque lifecycles that are hard to modify.
+</p>
+
+<p>
+Each lein command starts a separate JVM.
+</p>
+
+<p>
+Lein's target directory is temporary.
+</p>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline15">
+<h2 id="orgheadline15">Introducing Boot</h2>
+
+<div class="figure">
+<p><img src="./static/tools.png" alt="tools.png" />
+</p>
+</div>
+</section>
+<section id="slide-orgheadline6">
+<h3 id="orgheadline6">Boot in a Nutshell</h3>
+<ul>
+<li class="fragment appear">"Boot is not a build tool, it's build tooling"
+<ul>
+<li>Set of libraries to help you build your build process for your specific project</li>
+<li>no concept of a build</li>
+
+</ul></li>
+
+</ul>
+<aside class="notes">
+<p>
+You hear this a lot: "boot is not a build tool, it's build tooling"
+</p>
+
+</aside>
+</section>
+<section id="slide-orgheadline7">
+<h3 id="orgheadline7">Build Tool - Back to Basics</h3>
+<ul>
+<li>Bootstrapping Clojure on the JVM
+<ul>
+<li>Immutable classpath (JAR dependencies etc.)</li>
+<li>Mutable classpath (User Files)</li>
+<li>Environment</li>
+
+</ul></li>
+<li>Generic Process:
+<ul>
+<li>\(F_{user} → BOOTSTRAP → J_{cp} + F_{cp} + F_{asset} + E\)</li>
+
+</ul></li>
+
+</ul>
+<aside class="notes">
+<p>
+Show demo 0
+</p>
+
+</aside>
+</section>
+<section id="slide-orgheadline8">
+<h3 id="orgheadline8">Boot</h3>
+<p>
+\(F_{user} → (T_1..T_n) → J_{cp} + F_{cp} + F_{asset} + E\)
+</p>
+<ul>
+<li>Builds are processes, not specifications</li>
+<li>Composed of small tasks that deal with relevant abstractions</li>
+
+</ul>
+<aside class="notes">
+<p>
+In boot, the bootstap process is essentially a composition of tasks.
+</p>
+
+</aside>
+</section>
+<section id="slide-orgheadline9">
+<h3 id="orgheadline9">Composability ∝ Readability</h3>
+<div class="org-src-container">
+
+<pre  class="src src-clojure"><span style="color: #458588;">(</span><span style="color: #fb4934;">deftask</span> <span style="color: #fabd2f;">build</span>
+  <span style="color: #b8bb26;">"Builds jar for deployment"</span>
+  <span style="color: #b16286;">[]</span>
+  <span style="color: #b16286;">(</span>comp
+   <span style="color: #8ec07c;">(</span>aot<span style="color: #8ec07c;">)</span>
+   <span style="color: #8ec07c;">(</span>pom<span style="color: #8ec07c;">)</span>
+   <span style="color: #8ec07c;">(</span>uber<span style="color: #8ec07c;">)</span>
+   <span style="color: #8ec07c;">(</span>jar<span style="color: #8ec07c;">)</span>
+   <span style="color: #8ec07c;">(</span>target<span style="color: #8ec07c;">)</span><span style="color: #b16286;">)</span><span style="color: #458588;">)</span>
+</pre>
+</div>
+</section>
+<section id="slide-orgheadline10">
+<h3 id="orgheadline10">Tasks Are Functions</h3>
+<div class="org-src-container">
+
+<pre  class="src src-pseudocode">f(x) = x'
+
+a(b(c(x))) = x'
+
+build(x) = deploy(test(compile(x))) = x'
+</pre>
+</div>
+</section>
+<section id="slide-orgheadline11">
+<h3 id="orgheadline11">Tasks Are More Than Just Functions</h3>
+<ul>
+<li class="fragment appear">Middleware Factories</li>
+<li class="fragment appear">Stateful Transducers
+<ul>
+<li>Tasks know nothing about the input source and sink</li>
+<li>Tasks know nothing about each other</li>
+<li>High reusability, composablity</li>
+
+</ul></li>
+
+</ul>
+<aside class="notes">
+<p>
+Similar to Ring Middleware in concept.
+</p>
+
+</aside>
+</section>
+<section id="slide-orgheadline12">
+<h3 id="orgheadline12">The Anatomy of a Task</h3>
+<div class="org-src-container">
+
+<pre  class="src src-clojure"><span style="color: #458588;">(</span><span style="color: #fb4934;">deftask</span> <span style="color: #fabd2f;">foo</span>
+  <span style="color: #b8bb26;">"Task docstring."</span>
+  <span style="color: #b16286;">[</span>...<span style="color: #b16286;">]</span> <span style="color: #7c6f64;">;; </span><span style="color: #7c6f64;">Task options</span>
+  <span style="color: #b16286;">(</span><span style="color: #fb4934;">let</span> <span style="color: #8ec07c;">[</span>...<span style="color: #8ec07c;">]</span> <span style="color: #7c6f64;">;;</span><span style="color: #7c6f64;">Transducer-local state</span>
+    <span style="color: #8ec07c;">(</span><span style="color: #fb4934;">fn</span> <span style="color: #fabd2f;">middleware</span> <span style="color: #d65d0e;">[</span>next-handler<span style="color: #d65d0e;">]</span> 
+      <span style="color: #d65d0e;">(</span><span style="color: #fb4934;">fn</span> <span style="color: #fabd2f;">handler</span> <span style="color: #458588;">[</span>fileset<span style="color: #458588;">]</span>
+        <span style="color: #7c6f64;">;;</span><span style="color: #7c6f64;">Preprocessing goes here</span>
+        <span style="color: #458588;">(</span><span style="color: #fb4934;">let</span> <span style="color: #b16286;">[</span>fileset' <span style="color: #8ec07c;">(</span>... fileset<span style="color: #8ec07c;">)</span>
+              fileset' <span style="color: #8ec07c;">(</span>commit! fileset'<span style="color: #8ec07c;">)</span>
+              result   <span style="color: #8ec07c;">(</span>next-handler fileset'<span style="color: #8ec07c;">)</span><span style="color: #b16286;">]</span>
+          <span style="color: #7c6f64;">;;</span><span style="color: #7c6f64;">Postprocessing goes here (Side effects)</span>
+          result<span style="color: #458588;">)</span><span style="color: #d65d0e;">)</span><span style="color: #8ec07c;">)</span><span style="color: #b16286;">)</span><span style="color: #458588;">)</span>
+</pre>
+</div>
+<aside class="notes">
+<p>
+deftask is a macro that is essentially a defn with additional metadata
+</p>
+
+<p>
+Task-local state is wrapped in the let bindings.
+</p>
+
+<p>
+The tasks return a middleware function.
+</p>
+
+<p>
+The middleware expects a handler and returns a transformed one.
+</p>
+
+<p>
+A handler takes a fileset and does stuff to it during the preprocessing phase. It can also perform side effects in the postprocessing phase. The reason it is side effects only is because the final artifacts are already emitted.
+</p>
+
+<p>
+Show demo 1
+</p>
+
+</aside>
+</section>
+<section id="slide-orgheadline13">
+<h3 id="orgheadline13">Filesets</h3>
+<p>
+\(F_{cp} + F_{asset} → F'_{cp} + F'_{asset}\)
+</p>
+<ul>
+<li>Immutable value
+<ul>
+<li>automatic rewinding to initial state at start of pipeline</li>
+<li>Managed shared state</li>
+
+</ul></li>
+<li>API:
+<ul>
+<li>Add/Remove files</li>
+<li>Query (name, extension)</li>
+
+</ul></li>
+<li>Efficient</li>
+
+</ul>
+<aside class="notes">
+<p>
+The values passed around by tasks are termed filesets.
+</p>
+
+<p>
+During bootstap process, boot copies project files into temp dirs and manages them, essentially decoupling itself from the JVM classpath. It can mutate files without affecting the JVM classpath.
+</p>
+
+<p>
+Complex project.clj files typically name numerous places on disk where plugins should either emit or expect files for various purposes. Unfortunately, because the places on disk are global to the build process and are possibly shared by independent destructive processes, configuring builds this way is brittle.
+</p>
+
+<p>
+Boot provides an abstraction called a fileset.
+</p>
+
+<p>
+An immutable value containing references to the actual files.
+</p>
+
+<p>
+Analogous to a git repo. Address by content.
+</p>
+
+<p>
+Show demo 2
+</p>
+
+</aside>
+</section>
+<section id="slide-orgheadline14">
+<h3 id="orgheadline14">Summary</h3>
+
+<div class="figure">
+<p><img src="./static/pipeline.png" alt="pipeline.png" />
+</p>
+</div>
+<aside class="notes">
+<p>
+Build initial fileset. Pass it through the task pipeline.
+</p>
+
+<p>
+New files are created in anonymous temporary directories that are local to the task and managed by boot. These files can be added to the fileset to obtain a new immutable fileset object, which can then be committed to disk and passed to the next handler in the pipeline.
+</p>
+
+<p>
+Final artifacts emitted – The boot handler copies artifacts from the fileset into the target directory, removing any stale artifacts that may be present there from a previous build. The fileset is then returned back up the stack.
+</p>
+
+<p>
+Middleware post-processing – Finally, as the fileset percolates back up through the middleware layers, each handler has an opportunity to perform side effects, if applicable.
+</p>
+
+<p>
+Tasks don't modify the fileset during the post-processing phase.
+</p>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline16">
+<h2 id="orgheadline16">Pods</h2>
+<ul>
+<li>Docker for the JVM
+<ul>
+<li>Separate Clojure runtimes on the <b>same</b> JVM</li>
+
+</ul></li>
+<li>Solves dependency hell</li>
+<li><a href="https://github.com/emezeske/lein-cljsbuild/issues/439">Tools.reader dependency not respected</a></li>
+
+</ul>
+<aside class="notes">
+<p>
+Pods are probably the most underused feature of boot. It's essentially like docker; it creates a isolated environment that uses the same JVM process. This is unlike Lein, which forks the main JVM process when running plugins.
+</p>
+
+<p>
+Isolating dependencies that are only required during the build process and not in your Clojure application can help prevent dependency hell. Using Lein, you'll end up with issues like the above, where plugins use different versions of the same project.
+</p>
+
+<p>
+Pods are not just great theoretically. Sean Corfield from World Single's recently wrote about running their tests in pods. With pods they are able to run tests against both their Clojure version and Clojure SNAPSHOT, so they won't run into surprises when upgrading.
+</p>
+
+<p>
+Show demo 3
+</p>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline17">
+<h2 id="orgheadline17">Things you can expect</h2>
+<ul>
+<li class="fragment appear"><a href="https://github.com/seancorfield/boot-new">boot-new</a></li>
+<li class="fragment appear">better pods: with-pod macro</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline18">
+<h2 id="orgheadline18">How I use Boot</h2>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline19">
+<h2 id="orgheadline19">How to get started</h2>
+<ul>
+<li class="fragment appear">We have an excellent wiki!</li>
+<li class="fragment appear"><a href="https://github.com/magomimmo/modern-cljs/">https://github.com/magomimmo/modern-cljs/</a></li>
+<li class="fragment appear">Join us on Slack</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline20">
+<h2 id="orgheadline20">Recap</h2>
+<ul>
+<li>Boot is build tooling</li>
+<li>Power and expressivity of Clojure to write build process</li>
+<li>Abstractions like filesets, temp-dirs and Pods</li>
+<li>Familiar concepts like transducers, immutability</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline21">
+<h2 id="orgheadline21">Announcements</h2>
+<ul>
+<li>For those using Slack, try our todo app! <a href="http://aa.tk.sg/">http://aa.tk.sg/</a></li>
+<li>For those using fish, try <a href="http://fisherman.sh/">Fisherman</a></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline22">
+<h2 id="orgheadline22">Thank you!</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="../reveal.js/lib/js/head.min.js"></script>
+<script src="../reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: true,
+center: false,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+margin: 0.00,
+minScale: 1.00,
+maxScale: 1.40,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'fast',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '../reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

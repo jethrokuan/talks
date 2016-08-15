@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>GTD with Org-mode</title>
+<meta name="author" content="(Jethro Kuan)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="../reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="../reveal.js/css/theme/metropolis.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = '../reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">GTD with Org-mode</h1><h2 class="author">Jethro Kuan</h2>
+</section>
+
+<section>
+<section id="slide-orgheadline10">
+<h2 id="orgheadline10">Why GTD?</h2>
+<div class="outline-text-2" id="text-orgheadline10">
+</div></section>
+<section id="slide-orgheadline1">
+<h3 id="orgheadline1">Your Brain is a Computer</h3>
+<ul>
+<li>Already limited RAM</li>
+<li>Much of it is spent keeping track of "open loops"</li>
+<li>Inability give your 100% to the task at hand</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline2">
+<h3 id="orgheadline2">The Solution</h3>
+<ul>
+<li>Having an off-mind system you can trust</li>
+<li>Having a workflow to keep you in control</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline9">
+<h3 id="orgheadline9">The GTD Workflow</h3>
+<ol>
+<li>Capture</li>
+<li>Clarify</li>
+<li>Organize</li>
+<li>Reflect</li>
+<li>Engage</li>
+
+</ol>
+
+</section>
+<section id="slide-orgheadline3">
+<h4 id="orgheadline3">Step 1: Capture</h4>
+<p>
+Everything in mind goes into the inbox
+</p>
+<ul>
+<li>Todos</li>
+<li>Projects</li>
+<li>Errands</li>
+<li>Things to handle/finish</li>
+<li>etc. etc.</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline4">
+<h4 id="orgheadline4">Step 2: Clarify</h4>
+<ul>
+<li>Is it actionable?</li>
+<li>Should I delegate this to someone else?</li>
+<li>What should my next action be?</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline5">
+<h4 id="orgheadline5">Step 3: Organize</h4>
+<p>
+Put items where they belong.
+</p>
+<ul>
+<li>Next Actions file</li>
+<li>Delegations file</li>
+<li>etc. etc.</li>
+
+</ul>
+</section>
+<section id="slide-orgheadline6">
+<h4 id="orgheadline6">Step 4: Reflect</h4>
+<p>
+Review lists as frequently as needed
+</p>
+
+</section>
+<section id="slide-orgheadline7">
+<h4 id="orgheadline7">Step 5: Just Do It!</h4>
+
+<div class="figure">
+<p><img src="doit.gif" alt="doit.gif" />
+</p>
+</div>
+
+</section>
+<section id="slide-orgheadline8">
+<h4 id="orgheadline8"><a href="http://www.gaglianoco.com/wp-content/uploads/2013/06/allen-gtd-basic-flow-chart.jpg">Infographic</a></h4>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline12">
+<h2 id="orgheadline12">Why Emacs and org-mode?</h2>
+<ul>
+<li>Emacs is great!</li>
+<li>Org-mode is great!
+<ul>
+<li>Org capture/refile</li>
+<li>Deadlines/scheduling</li>
+<li>Agenda</li>
+<li>Tags</li>
+<li>Plain text</li>
+
+</ul></li>
+<li><a href="http://orgmode.org/worg/org-gtd-etc.html">Tons</a> of tutorials out there for Org with GTD</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline11">
+<h3 id="orgheadline11">Why create my own mode?</h3>
+<ul>
+<li>The GTD tutorials presented still requires a lot of manual work.</li>
+<li>The workflow follows a binary decision tree, and can be automated.</li>
+<li>Try out Elisp</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline13">
+<h2 id="orgheadline13">Demo and Explanation</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline14">
+<h2 id="orgheadline14">Thank you!</h2>
+<p>
+<a href="https://github.com/jethrokuan/gtd-mode">Github</a>
+</p>
+</section>
+</section>
+</div>
+</div>
+<script src="../reveal.js/lib/js/head.min.js"></script>
+<script src="../reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: false,
+progress: true,
+history: true,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+margin: 0.00,
+minScale: 1.00,
+maxScale: 1.40,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'fast',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '../reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

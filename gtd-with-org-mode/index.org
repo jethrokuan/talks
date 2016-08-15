@@ -1,0 +1,81 @@
+#+EXPORT_EXCLUDE_TAGS:  noexport
+#+AUTHOR:               Jethro Kuan
+#+TITLE:                GTD with Org-mode
+#+EMAIL:                jethrokuan95@gmail.com
+#+LANGUAGE:             en
+#+OPTIONS:              toc:nil timestamp:nil
+#+OPTIONS:              reveal_center:t reveal_progress:t reveal_history:t reveal_control:nil
+#+OPTIONS:              reveal_mathjax:nil reveal_rolling_links:nil reveal_keyboard:t reveal_overview:t num:nil
+#+REVEAL_HLEVEL:        1
+#+REVEAL_MARGIN:        0.0
+#+REVEAL_MIN_SCALE:     1.0
+#+REVEAL_MAX_SCALE:     1.4
+#+REVEAL_ROOT:          ../reveal.js
+#+REVEAL_THEME:         metropolis
+#+REVEAL_TRANS:         fade
+#+REVEAL_SPEED:         fast
+#+REVEAL_PLUGINS:       (markdown notes)
+
+* Why GTD?
+** Your Brain is a Computer
+- Already limited RAM
+- Much of it is spent keeping track of "open loops"
+- Inability give your 100% to the task at hand
+
+** The Solution
+- Having an off-mind system you can trust
+- Having a workflow to keep you in control
+
+** The GTD Workflow
+1. Capture
+2. Clarify
+3. Organize
+4. Reflect
+5. Engage
+
+*** Step 1: Capture
+Everything in mind goes into the inbox
+- Todos
+- Projects
+- Errands
+- Things to handle/finish
+- etc. etc.
+
+*** Step 2: Clarify
+- Is it actionable?
+- Should I delegate this to someone else?
+- What should my next action be?
+
+*** Step 3: Organize
+Put items where they belong.
+- Next Actions file
+- Delegations file
+- etc. etc.
+*** Step 4: Reflect
+Review lists as frequently as needed
+
+*** Step 5: Just Do It!
+[[file:doit.gif]]
+
+*** [[http://www.gaglianoco.com/wp-content/uploads/2013/06/allen-gtd-basic-flow-chart.jpg][Infographic]]
+
+* Why Emacs and org-mode?
+- Emacs is great!
+- Org-mode is great!
+  - Org capture/refile
+  - Deadlines/scheduling
+  - Agenda
+  - Tags
+  - Plain text
+- [[http://orgmode.org/worg/org-gtd-etc.html][Tons]] of tutorials out there for Org with GTD
+
+** Why create my own mode?
+- The GTD tutorials presented still requires a lot of manual work.
+- The workflow follows a binary decision tree, and can be automated.
+- Try out Elisp
+
+* Demo and Explanation
+
+* Thank you!
+[[https://github.com/jethrokuan/gtd-mode][Github]]
+

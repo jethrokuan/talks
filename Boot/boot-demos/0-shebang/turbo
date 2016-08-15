@@ -1,0 +1,9 @@
+#!/usr/bin/env boot
+
+(set-env! :dependencies '[[alandipert/hyperturbo "1.0.0"]])
+
+(require '[alandipert.hyperturbo :refer [TURBO GOTO]])
+
+(TURBO
+ 10 (println "Hello Clojurians!")
+ 20 (GOTO 10))

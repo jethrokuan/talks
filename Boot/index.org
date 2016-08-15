@@ -1,0 +1,387 @@
+#+EXPORT_EXCLUDE_TAGS:  noexport
+#+AUTHOR:               Jethro Kuan
+#+TITLE:                Boot: A Whirlwind Tour
+#+EMAIL:                jethrokuan95@gmail.com
+#+LANGUAGE:             en
+#+OPTIONS:              toc:nil
+#+OPTIONS:              reveal_center:nil reveal_progress:t reveal_history:t reveal_control:t
+#+OPTIONS:              reveal_rolling_links:nil reveal_keyboard:t reveal_overview:t num:nil
+#+REVEAL_HLEVEL:        1
+#+REVEAL_MARGIN:        0.0
+#+REVEAL_MIN_SCALE:     1.0
+#+REVEAL_MAX_SCALE:     1.4
+#+REVEAL_ROOT:          ../reveal.js
+#+REVEAL_THEME:         jethro
+#+REVEAL_TRANS:         fade
+#+REVEAL_SPEED:         fast
+#+REVEAL_PLUGINS: (markdown notes)
+
+* About Me
+#+ATTR_REVEAL: :frag (appear)
+- ~ 6 months of Clojure experience
+- Intern at Tinkertanker
+- Use Clojure to develop Slack integrations
+- Slides can be found at http://tk.sg/boot
+** Disclaimer
+** Some Context...
+#+BEGIN_NOTES
+- First app I was commissioned to make was a todo app within Slack.
+  - Settled on first libraries I came across: Compojure/Ring/Jetty
+- Picked Boot initially (2.4)
+- Boot was too hard for me because I didn't really understand the JVM back then.
+- Decided to just download lein and run `lein new compojure todo`
+#+END_NOTES
+* Lein
+#+BEGIN_SRC clojure
+(defproject org.example/sample "1.0.0-SNAPSHOT" ; version "1.0.0-SNAPSHOT"
+  :description "A sample project"
+  :url "http://example.org/sample-clojure-project"
+  :license {:name "Eclipse Public License - v 1.0"
+            :url "http://www.eclipse.org/legal/epl-v10.html"
+            :distribution :repo
+            :comments "same as Clojure"}
+  :min-lein-version "2.0.0"
+  :dependencies [[org.clojure/clojure "1.3.0"]
+                 [org.jclouds/jclouds "1.0" :classifier "jdk15"]
+                 [net.sf.ehcache/ehcache "2.3.1" :extension "pom"]
+                 [log4j "1.2.15" :exclusions [[javax.mail/mail :extension "jar"]
+                                              [javax.jms/jms :classifier "*"]
+                                              com.sun.jdmk/jmxtools
+                                              com.sun.jmx/jmxri]]
+                 [org.lwjgl.lwjgl/lwjgl "2.8.5"]
+                 [org.lwjgl.lwjgl/lwjgl-platform "2.8.5"
+                  :classifier "natives-osx"
+                  :native-prefix ""]]
+  :pedantic? :abort
+  :exclusions [org.apache.poi/poi
+               org.apache.poi/poi-ooxml]
+  :plugins [[lein-pprint "1.1.1"]
+            [lein-assoc "0.1.0"]
+            [s3-wagon-private "1.1.1"]
+            [lein-foo "0.0.1" :hooks false]
+            [lein-bar "0.0.1" :middleware false]]
+  :repositories [["java.net" "http://download.java.net/maven/2"]
+                 ["sonatype" {:url "http://oss.sonatype.org/content/repositories/releases"                         
+                              :snapshots false
+                              :sign-releases false
+                              :checksum :fail
+                              :update :always
+                              :releases {:checksum :fail :update :always}}]
+                 ["snapshots" "http://blueant.com/archiva/snapshots"]
+                 ["releases" {:url "http://blueant.com/archiva/internal"
+                              :username "milgrim" :password :env}]]
+  :mirrors {"central" {:name "central"
+                       :url "http://mirrors.ibiblio.org/pub/mirrors/maven2"}
+            #"clojars" {:name "Internal nexus"
+                        :url "http://mvn.local/nexus/releases"
+                        :repo-manager true}}
+  :local-repo "local-m2"
+  :update :always
+  :checksum :fail
+  :offline? true
+  :deploy-repositories [["releases" {:url "http://blueant.com/archiva/internal/releases"
+                                     :signing {:gpg-key "0xAB123456"}}]
+                        ["snapshots" "http://blueant.com/archiva/internal/snapshots"]]
+  :signing {:gpg-key "root@eruditorum.org"}
+  :certificates ["blueant.pem"]
+  :profiles {:debug {:debug true
+                     :injections [(prn (into {} (System/getProperties)))]}
+             :1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
+             :1.5 {:dependencies [[org.clojure/clojure "1.5.0"]]}
+             :dev {:resource-paths ["dummy-data"]
+                   :dependencies [[clj-stacktrace "0.2.4"]]}
+             :uberjar {:aot :all}
+             :repl {:plugins [[cider/cider-nrepl "0.7.1"]]}}
+  :hooks [leiningen.hooks.difftest]
+  :middleware [lein-xml.plugin/middleware]
+  :implicit-middleware false
+  :implicit-hooks false
+
+  :main my.service.runner
+  :aliases {"launch" ["run" "-m" "myproject.main"]
+            "launch-version" ["run" "-m" "myproject.main" :project/version]
+            "dumbrepl" ["trampoline" "run" "-m" "clojure.main/main"]
+            "go" ^:pass-through-help ["run" "-m"]
+            "deploy!" ^{:doc "Recompile sources, then deploy if tests succeed."}
+            ["do" "clean" ["test" ":integration"] ["deploy" "clojars"]]}
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version"
+                   "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag"]
+                  ["deploy"]]
+  :prep-tasks [["protobuf" "compile"] "javac" "compile"]
+  :aot [org.example.sample]
+  :injections [(require 'clojure.pprint)]
+  :java-agents [[nodisassemble "0.1.1" :options "extra"]]
+  :javac-options ["-target" "1.6" "-source" "1.6" "-Xlint:-options"]
+  :warn-on-reflection true
+  :global-vars {*warn-on-reflection* true
+                *assert* false}
+  :java-cmd "/home/phil/bin/java1.7"
+  :jvm-opts ["-Xmx1g"]
+  :eval-in :leiningen
+  :bootclasspath true
+  :source-paths ["src" "src/main/clojure"]
+  :java-source-paths ["src/main/java"]  ; Java source is stored separately.
+  :test-paths ["test" "src/test/clojure"]
+  :resource-paths ["src/main/resource"] ; Non-code files included in classpath/jar.
+  :target-path "target/%s/"
+  :compile-path "%s/classy-files"
+  :native-path "%s/bits-n-stuff"
+  :clean-targets [:target-path :compile-path :foobar-paths
+                  [:baz-config :qux-path] "out"]
+  :clean-non-project-classes true
+  :checkout-deps-shares [:source-paths :test-paths
+                         ~(fn [p] (str (:root p) "/lib/dev/*"))]
+  :test-selectors {:default (fn [m] (not (or (:integration m) (:regression m))))
+                   :integration :integration
+                   :regression :regression}
+  :monkeypatch-clojure-test false
+  :repl-options { ;; Specify the string to print when prompting for input.
+                 ;; defaults to something like (fn [ns] (str *ns* "=> "))
+                 :prompt (fn [ns] (str "your command for <" ns ">, master? " ))
+                 ;; What to print when the repl session starts.
+                 :welcome (println "Welcome to the magical world of the repl!")
+                 :init-ns foo.bar
+                 :init (println "here we are in" *ns*)
+                 :caught clj-stacktrace.repl/pst+
+                 :skip-default-init false
+                 :host "0.0.0.0"
+                 :port 4001
+                 :timeout 40000
+                 :nrepl-handler (clojure.tools.nrepl.server/default-handler)
+                 :nrepl-middleware [my.nrepl.thing/wrap-amazingness
+                                    (fn [handler]
+                                      (fn [& args]
+                                        (prn :middle args)
+                                        (apply handler args)))]}
+  :jar-name "sample.jar"
+  :uberjar-name "sample-standalone.jar"
+  :omit-source true
+  :jar-exclusions [#"(?:^|/).svn/"]
+  :uberjar-exclusions [#"META-INF/DUMMY.SF"]
+  :auto-clean false
+  :uberjar-merge-with {#"\.properties$" [slurp str spit]}
+  :filespecs [{:type :path :path "config/base.clj"}
+              {:type :paths :paths ["config/web" "config/cli"]}
+              {:type :bytes :path "project.clj"
+               :bytes ~(slurp "project.clj")}
+              {:type :fn :fn (fn [p]
+                               {:type :bytes :path "git-log"
+                                :bytes (:out (clojure.java.shell/sh
+                                              "git" "log" "-n" "1"))})}]
+  :manifest {"Project-awesome-level" "super-great"
+             "Class-Path" ~#(clojure.string/join
+                             \space
+                             (leiningen.core.classpath/get-classpath %))
+             :my-section-1 [["MyKey1" "MyValue1"] ["MyKey2" "MyValue2"]]
+             :my-section-2 {"MyKey3" "MyValue3" "MyKey4" "MyValue4"}
+             "Grunge-level" my.plugin/calculate-grunginess}
+
+  :pom-location "target/"
+  :parent [org.example/parent "0.0.1" :relative-path "../parent/pom.xml"]
+  :extensions [[org.apache.maven.wagon/wagon-webdav "1.0-beta-2"]
+               [foo/bar-baz "1.0"]]
+  :pom-plugins [[com.theoryinpractise/clojure-maven-plugin "1.3.13"
+                 {:configuration [:sourceDirectories [:sourceDirectory "src"]]
+                  :extensions "true"
+                  :executions ([:execution [:id "echodir"]
+                                [:goals ([:goal "run"])]
+                                [:phase "verify"]])}]
+                [org.apache.tomcat.maven/tomcat7-maven-plugin "2.1"]]
+  :scm {:name "git"
+        :tag "098afd745bcd"
+        :url "http://127.0.0.1/git/my-project"
+        :dir ".."}
+  :pom-addition [:developers [:developer {:id "benbit"}
+                              [:name "Ben Bitdiddle"]
+                              [:url "http://www.example.com/benjamin"]]]
+  :install-releases? false
+  :deploy-branches ["master"]
+  :classifiers {:tests {:source-paths ^:replace ["test"]}
+                :classy :my-profile})
+#+END_SRC
+#+BEGIN_NOTES
+- Example lein project.clj file
+- With a focus on project automation and declarative configuration, it gets out of your way and lets you focus on your code.
+- This worked for a while until I started adding more complex stuff
+#+END_NOTES
+** Lein's Downfall
+#+ATTR_REVEAL: :frag (appear)
+- Monolithic Plugins
+  - Figwheel
+  - No composability
+- There are *no* general solutions to specific problems
+- Memory consumption
+  - plugins fork JVM to load deps
+- Different implementations of plugins don't mix and match
+- The need for Lein clean
+#+BEGIN_NOTES
+The applications we build today are highly complex. Web applications may seem simple at first, but when you get to deploying them it's actually highly complex. Things like SCSS preprocessors, minifiers, etc. Build tools just can't keep up.
+
+Successful plugins tend to evolve into monolithic one.
+
+Reason to use Clojure - reduces complexity. Yet the build cycle Lein introduces is inherently complex, because it tries to introduce a general solution to a specific problem. Opaque lifecycles that are hard to modify.
+
+Each lein command starts a separate JVM.
+
+Lein's target directory is temporary.
+#+END_NOTES
+* Introducing Boot
+[[./static/tools.png]]
+** Boot in a Nutshell
+#+ATTR_REVEAL: :frag (appear)
+- "Boot is not a build tool, it's build tooling"
+  - Set of libraries to help you build your build process for your specific project
+  - no concept of a build
+#+BEGIN_NOTES
+You hear this a lot: "boot is not a build tool, it's build tooling"
+#+END_NOTES
+** Build Tool - Back to Basics
+- Bootstrapping Clojure on the JVM
+  - Immutable classpath (JAR dependencies etc.)
+  - Mutable classpath (User Files)
+  - Environment
+- Generic Process:
+  - $F_{user} → BOOTSTRAP → J_{cp} + F_{cp} + F_{asset} + E$
+#+BEGIN_NOTES
+Show demo 0
+#+END_NOTES
+** Boot
+$F_{user} → (T_1..T_n) → J_{cp} + F_{cp} + F_{asset} + E$
+- Builds are processes, not specifications
+- Composed of small tasks that deal with relevant abstractions
+#+BEGIN_NOTES
+In boot, the bootstap process is essentially a composition of tasks.
+#+END_NOTES
+** Composability ∝ Readability
+#+BEGIN_SRC clojure
+(deftask build
+  "Builds jar for deployment"
+  []
+  (comp
+   (aot)
+   (pom)
+   (uber)
+   (jar)
+   (target)))
+#+END_SRC
+** Tasks Are Functions
+#+BEGIN_SRC pseudocode
+f(x) = x'
+
+a(b(c(x))) = x'
+
+build(x) = deploy(test(compile(x))) = x'
+#+END_SRC
+** Tasks Are More Than Just Functions
+#+ATTR_REVEAL: :frag (appear)
+- Middleware Factories
+- Stateful Transducers
+  - Tasks know nothing about the input source and sink
+  - Tasks know nothing about each other
+  - High reusability, composablity
+#+BEGIN_NOTES
+Similar to Ring Middleware in concept.
+#+END_NOTES
+** The Anatomy of a Task
+#+BEGIN_SRC clojure
+(deftask foo
+  "Task docstring."
+  [...] ;; Task options
+  (let [...] ;;Transducer-local state
+    (fn middleware [next-handler] 
+      (fn handler [fileset]
+        ;;Preprocessing goes here
+        (let [fileset' (... fileset)
+              fileset' (commit! fileset')
+              result   (next-handler fileset')]
+          ;;Postprocessing goes here (Side effects)
+          result)))))
+#+END_SRC
+#+BEGIN_NOTES
+deftask is a macro that is essentially a defn with additional metadata
+
+Task-local state is wrapped in the let bindings.
+
+The tasks return a middleware function.
+
+The middleware expects a handler and returns a transformed one.
+
+A handler takes a fileset and does stuff to it during the preprocessing phase. It can also perform side effects in the postprocessing phase. The reason it is side effects only is because the final artifacts are already emitted.
+
+Show demo 1
+#+END_NOTES
+** Filesets
+$F_{cp} + F_{asset} → F'_{cp} + F'_{asset}$
+- Immutable value
+  - automatic rewinding to initial state at start of pipeline
+  - Managed shared state
+- API:
+  - Add/Remove files
+  - Query (name, extension)
+- Efficient
+#+BEGIN_NOTES
+The values passed around by tasks are termed filesets.
+
+During bootstap process, boot copies project files into temp dirs and manages them, essentially decoupling itself from the JVM classpath. It can mutate files without affecting the JVM classpath.
+
+Complex project.clj files typically name numerous places on disk where plugins should either emit or expect files for various purposes. Unfortunately, because the places on disk are global to the build process and are possibly shared by independent destructive processes, configuring builds this way is brittle.
+
+Boot provides an abstraction called a fileset.
+
+An immutable value containing references to the actual files.
+
+Analogous to a git repo. Address by content.
+
+Show demo 2
+#+END_NOTES
+** Summary
+[[./static/pipeline.png]]
+#+BEGIN_NOTES
+Build initial fileset. Pass it through the task pipeline.
+
+New files are created in anonymous temporary directories that are local to the task and managed by boot. These files can be added to the fileset to obtain a new immutable fileset object, which can then be committed to disk and passed to the next handler in the pipeline.
+
+Final artifacts emitted – The boot handler copies artifacts from the fileset into the target directory, removing any stale artifacts that may be present there from a previous build. The fileset is then returned back up the stack.
+
+Middleware post-processing – Finally, as the fileset percolates back up through the middleware layers, each handler has an opportunity to perform side effects, if applicable.
+
+Tasks don't modify the fileset during the post-processing phase.
+#+END_NOTES
+* Pods
+
+  
+- Docker for the JVM
+  - Separate Clojure runtimes on the *same* JVM
+- Solves dependency hell
+- [[https://github.com/emezeske/lein-cljsbuild/issues/439][Tools.reader dependency not respected]]
+#+BEGIN_NOTES
+Pods are probably the most underused feature of boot. It's essentially like docker; it creates a isolated environment that uses the same JVM process. This is unlike Lein, which forks the main JVM process when running plugins.
+
+Isolating dependencies that are only required during the build process and not in your Clojure application can help prevent dependency hell. Using Lein, you'll end up with issues like the above, where plugins use different versions of the same project.
+
+Pods are not just great theoretically. Sean Corfield from World Single's recently wrote about running their tests in pods. With pods they are able to run tests against both their Clojure version and Clojure SNAPSHOT, so they won't run into surprises when upgrading.
+
+Show demo 3
+#+END_NOTES
+* Things you can expect
+#+ATTR_REVEAL: :frag (appear)
+- [[https://github.com/seancorfield/boot-new][boot-new]]
+- better pods: with-pod macro
+* How I use Boot
+* How to get started
+#+ATTR_REVEAL: :frag (appear)
+- We have an excellent wiki!
+- https://github.com/magomimmo/modern-cljs/
+- Join us on Slack
+* Recap
+- Boot is build tooling
+- Power and expressivity of Clojure to write build process
+- Abstractions like filesets, temp-dirs and Pods
+- Familiar concepts like transducers, immutability
+* Announcements
+- For those using Slack, try our todo app! http://aa.tk.sg
+- For those using fish, try [[http://fisherman.sh][Fisherman]]
+* Thank you!
