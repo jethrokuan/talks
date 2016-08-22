@@ -119,7 +119,7 @@ Review lists as frequently as needed
 
 </section>
 <section id="slide-orgheadline8">
-<h4 id="orgheadline8"><a href="http://www.gaglianoco.com/wp-content/uploads/2013/06/allen-gtd-basic-flow-chart.jpg">Infographic</a></h4>
+<h4 id="orgheadline8"><a href="http://www.gaglianoco.com/wp-content/uploads/2013/06/allen-gtd-basic-flow-chart.jpg">Info-graphic</a></h4>
 
 </section>
 </section>
@@ -137,7 +137,7 @@ Review lists as frequently as needed
 <li>Plain text</li>
 
 </ul></li>
-<li><a href="http://orgmode.org/worg/org-gtd-etc.html">Tons</a> of tutorials out there for Org with GTD</li>
+<li><a href="http://orgmode.org/worg/org-gtd-etc.html">Tons</a> of tutorials for Org with GTD</li>
 
 </ul>
 
@@ -145,9 +145,9 @@ Review lists as frequently as needed
 <section id="slide-orgheadline11">
 <h3 id="orgheadline11">Why create my own mode?</h3>
 <ul>
-<li>The GTD tutorials presented still requires a lot of manual work.</li>
+<li>The GTD tutorials presented require a lot of manual work.</li>
 <li>The workflow follows a binary decision tree, and can be automated.</li>
-<li>Try out Elisp</li>
+<li>Because I can.</li>
 
 </ul>
 
@@ -155,13 +155,142 @@ Review lists as frequently as needed
 </section>
 <section>
 <section id="slide-orgheadline13">
-<h2 id="orgheadline13">Demo and Explanation</h2>
-
+<h2 id="orgheadline13">Demo</h2>
 </section>
 </section>
 <section>
+<section id="slide-orgheadline19">
+<h2 id="orgheadline19">Emacs Lisp Basics</h2>
+<div class="outline-text-2" id="text-orgheadline19">
+</div></section>
 <section id="slide-orgheadline14">
-<h2 id="orgheadline14">Thank you!</h2>
+<h3 id="orgheadline14">It's already there for you</h3>
+<p>
+<code>C-h i</code> gives you access to:
+</p>
+<ul>
+<li>Emacs Lisp Reference</li>
+<li>Emacs Lisp Tutorial</li>
+
+</ul>
+</section>
+<section id="slide-orgheadline15">
+<h3 id="orgheadline15">Emacs Lisp is a Lisp</h3>
+<p>
+This means there are tons of parentheses.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-emacs-lisp">(+ 2 (+ 1 3))
+</pre>
+</div>
+
+<p>
+These are your friends.
+</p>
+</section>
+<section id="slide-orgheadline16">
+<h3 id="orgheadline16">Variables</h3>
+<div class="org-src-container">
+
+<pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">setq</span> variable-name <span style="color: #CC9393;">"Variable"</span>)
+</pre>
+</div>
+</section>
+<section id="slide-orgheadline17">
+<h3 id="orgheadline17">Functions</h3>
+<p>
+Functions are created with <code>defun</code>. Evaluate with <code>C-M-x</code>.
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">defun</span> <span style="color: #93E0E3;">hello</span> (name) (insert <span style="color: #CC9393;">"Hello "</span> name))
+</pre>
+</div>
+</section>
+<section id="slide-orgheadline18">
+<h3 id="orgheadline18">Lisp is list processing</h3>
+<div class="org-src-container">
+
+<pre  class="src src-emacs-lisp"><span style="color: #5F7F5F;">;; </span><span style="color: #7F9F7F;">Let's store a list of names:</span>
+(<span style="color: #F0DFAF; font-weight: bold;">setq</span> list-of-names '(<span style="color: #CC9393;">"Sarah"</span> <span style="color: #CC9393;">"Chloe"</span> <span style="color: #CC9393;">"Mathilde"</span>))
+
+<span style="color: #5F7F5F;">;; </span><span style="color: #7F9F7F;">Get the first element of this list with `</span><span style="color: #BFEBBF;">car</span><span style="color: #7F9F7F;">':</span>
+(car list-of-names)
+
+<span style="color: #5F7F5F;">;; </span><span style="color: #7F9F7F;">Get a list of all but the first element with `</span><span style="color: #BFEBBF;">cdr</span><span style="color: #7F9F7F;">':</span>
+(cdr list-of-names)
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline24">
+<h2 id="orgheadline24">GTD-mode specifics</h2>
+<div class="outline-text-2" id="text-orgheadline24">
+</div></section>
+<section id="slide-orgheadline20">
+<h3 id="orgheadline20">Creating a minor mode</h3>
+<div class="org-src-container">
+
+<pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">define-minor-mode</span> <span style="color: #93E0E3;">gtd-mode</span>
+  <span style="color: #9FC59F;">"GTD mode"</span>
+  <span style="color: #DCDCCC; font-weight: bold;">:lighter</span> <span style="color: #CC9393;">" gtd"</span>
+  <span style="color: #DCDCCC; font-weight: bold;">:global</span> t)
+</pre>
+</div>
+</section>
+<section id="slide-orgheadline21">
+<h3 id="orgheadline21"><code>defcustom</code> and <code>defgroup</code></h3>
+<div class="org-src-container">
+
+<pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">defgroup</span> <span style="color: #7CB8BB;">gtd</span> nil
+  <span style="color: #9FC59F;">"Provides an Emacs implementation of the GTD workflow."</span>
+  <span style="color: #DCDCCC; font-weight: bold;">:group</span> 'extensions)
+
+(<span style="color: #F0DFAF; font-weight: bold;">defcustom</span> <span style="color: #DFAF8F;">gtd-folder</span> <span style="color: #CC9393;">"~/.org/gtd"</span>
+  <span style="color: #9FC59F;">"Folder that contains all GTD-related files. Defaults to \"~/.org/gtd\"."</span>
+  <span style="color: #DCDCCC; font-weight: bold;">:group</span> 'gtd)
+</pre>
+</div>
+</section>
+<section id="slide-orgheadline22">
+<h3 id="orgheadline22">Step 1: Capture</h3>
+<p>
+No need to reinvent the wheel here. Use <code>org-capture</code>.
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-emacs-lisp">(add-to-list 'org-capture-templates '(<span style="color: #CC9393;">"i"</span> <span style="color: #CC9393;">"Inbox"</span> entry (file gtd-inbox-file)
+                                      <span style="color: #CC9393;">"* %?%i\n"</span>))
+</pre>
+</div>
+</section>
+<section id="slide-orgheadline23">
+<h3 id="orgheadline23">Step 2: Clarify</h3>
+<div class="org-src-container">
+
+<pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">defun</span> <span style="color: #93E0E3;">gtd-clear-inbox</span> ()                                                          <span style="color: #5F7F5F;">;; </span><span style="color: #7F9F7F;">Define a function `gtd-clear-inbox`</span>
+  (<span style="color: #F0DFAF; font-weight: bold;">interactive</span>)                                                                    <span style="color: #5F7F5F;">;; </span><span style="color: #7F9F7F;">Make it invokable with M-x</span>
+  (<span style="color: #F0DFAF; font-weight: bold;">save-window-excursion</span>                                                           <span style="color: #5F7F5F;">;; </span><span style="color: #7F9F7F;">let's return here after this function ends</span>
+    (find-file gtd-inbox-file)                                                     <span style="color: #5F7F5F;">;;   </span><span style="color: #7F9F7F;">open my inbox file</span>
+    (beginning-of-buffer)                                                          <span style="color: #5F7F5F;">;;   </span><span style="color: #7F9F7F;">go to the start of the file</span>
+    (<span style="color: #F0DFAF; font-weight: bold;">catch</span> '<span style="color: #BFEBBF;">premature-end</span>                                                          <span style="color: #5F7F5F;">;;   </span><span style="color: #7F9F7F;">stop when exception is thrown</span>
+      (<span style="color: #F0DFAF; font-weight: bold;">while</span> (equal ?* (char-after 1))                                             <span style="color: #5F7F5F;">;;   </span><span style="color: #7F9F7F;">loop while it's a headline</span>
+        (<span style="color: #F0DFAF; font-weight: bold;">let</span> ((title (org-element-property <span style="color: #DCDCCC; font-weight: bold;">:raw-value</span> (org-element-at-point))))    <span style="color: #5F7F5F;">;;     </span><span style="color: #7F9F7F;">create a local var title containing the title</span>
+          (<span style="color: #F0DFAF; font-weight: bold;">if</span> (y-or-n-p (concat <span style="color: #CC9393;">"\""</span> title <span style="color: #CC9393;">"\". Is this actionable?"</span>))             <span style="color: #5F7F5F;">;;     </span><span style="color: #7F9F7F;">Ask: is it an actionable?</span>
+              (gtd-select-options gtd-actionable-options)                          <span style="color: #5F7F5F;">;;       </span><span style="color: #7F9F7F;">yes: present actionable options            </span>
+            (gtd-select-options gtd-nonactionable-options))))                      <span style="color: #5F7F5F;">;;        </span><span style="color: #7F9F7F;">no: present nonactionable options </span>
+      (message <span style="color: #CC9393;">"Inbox clear!"</span>))                                                    <span style="color: #5F7F5F;">;;   </span><span style="color: #7F9F7F;">print message clear</span>
+    (save-buffer)))
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline25">
+<h2 id="orgheadline25">Thank you!</h2>
 <p>
 <a href="https://github.com/jethrokuan/gtd-mode">Github</a>
 </p>

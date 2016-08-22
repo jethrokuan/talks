@@ -57,7 +57,7 @@ Review lists as frequently as needed
 *** Step 5: Just Do It!
 [[file:doit.gif]]
 
-*** [[http://www.gaglianoco.com/wp-content/uploads/2013/06/allen-gtd-basic-flow-chart.jpg][Infographic]]
+*** [[http://www.gaglianoco.com/wp-content/uploads/2013/06/allen-gtd-basic-flow-chart.jpg][Info-graphic]]
 
 * Why Emacs and org-mode?
 - Emacs is great!
@@ -67,15 +67,87 @@ Review lists as frequently as needed
   - Agenda
   - Tags
   - Plain text
-- [[http://orgmode.org/worg/org-gtd-etc.html][Tons]] of tutorials out there for Org with GTD
+- [[http://orgmode.org/worg/org-gtd-etc.html][Tons]] of tutorials for Org with GTD
 
 ** Why create my own mode?
-- The GTD tutorials presented still requires a lot of manual work.
+- The GTD tutorials presented require a lot of manual work.
 - The workflow follows a binary decision tree, and can be automated.
-- Try out Elisp
+- Because I can.
 
-* Demo and Explanation
+* Demo
+* Emacs Lisp Basics
+** It's already there for you
+=C-h i= gives you access to:
+- Emacs Lisp Reference
+- Emacs Lisp Tutorial
+** Emacs Lisp is a Lisp
+This means there are tons of parentheses.
 
+#+begin_src emacs-lisp :tangle no
+(+ 2 (+ 1 3))
+#+end_src
+
+These are your friends.
+** Variables
+#+begin_src emacs-lisp :tangle no
+(setq variable-name "Variable")
+#+end_src
+** Functions
+Functions are created with =defun=. Evaluate with =C-M-x=.
+#+BEGIN_SRC emacs-lisp
+  (defun hello (name) (insert "Hello " name))
+#+END_SRC
+** Lisp is list processing
+#+BEGIN_SRC emacs-lisp
+;; Let's store a list of names:
+(setq list-of-names '("Sarah" "Chloe" "Mathilde"))
+
+;; Get the first element of this list with `car':
+(car list-of-names)
+
+;; Get a list of all but the first element with `cdr':
+(cdr list-of-names)
+#+END_SRC
+* GTD-mode specifics
+** Creating a minor mode
+#+BEGIN_SRC emacs-lisp
+(define-minor-mode gtd-mode
+  "GTD mode"
+  :lighter " gtd"
+  :global t)
+#+END_SRC
+** =defcustom= and =defgroup=
+#+BEGIN_SRC emacs-lisp
+  (defgroup gtd nil
+    "Provides an Emacs implementation of the GTD workflow."
+    :group 'extensions)
+
+  (defcustom gtd-folder "~/.org/gtd"
+    "Folder that contains all GTD-related files. Defaults to \"~/.org/gtd\"."
+    :group 'gtd)
+#+END_SRC
+** Step 1: Capture
+No need to reinvent the wheel here. Use =org-capture=.
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-capture-templates '("i" "Inbox" entry (file gtd-inbox-file)
+                                        "* %?%i\n"))
+#+END_SRC
+** Step 2: Clarify
+#+BEGIN_SRC emacs-lisp
+  (defun gtd-clear-inbox ()                                                          ;; Define a function `gtd-clear-inbox`
+    (interactive)                                                                    ;; Make it invokable with M-x
+    (save-window-excursion                                                           ;; let's return here after this function ends
+      (find-file gtd-inbox-file)                                                     ;;   open my inbox file
+      (beginning-of-buffer)                                                          ;;   go to the start of the file
+      (catch 'premature-end                                                          ;;   stop when exception is thrown
+        (while (equal ?* (char-after 1))                                             ;;   loop while it's a headline
+          (let ((title (org-element-property :raw-value (org-element-at-point))))    ;;     create a local var title containing the title
+            (if (y-or-n-p (concat "\"" title "\". Is this actionable?"))             ;;     Ask: is it an actionable?
+                (gtd-select-options gtd-actionable-options)                          ;;       yes: present actionable options            
+              (gtd-select-options gtd-nonactionable-options))))                      ;;        no: present nonactionable options 
+        (message "Inbox clear!"))                                                    ;;   print message clear
+      (save-buffer)))
+#+END_SRC
 * Thank you!
 [[https://github.com/jethrokuan/gtd-mode][Github]]
 
