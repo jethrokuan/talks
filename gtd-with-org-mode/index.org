@@ -74,7 +74,6 @@ Review lists as frequently as needed
 - The workflow follows a binary decision tree, and can be automated.
 - Because I can.
 
-* Demo
 * Emacs Lisp Basics
 ** It's already there for you
 =C-h i= gives you access to:
@@ -187,7 +186,7 @@ Modify the inbox headline, then copy it to the correct place.
     (gtd-refile-to gtd-projects-file "Project: "))
 #+END_SRC
 * Demo
-* Further extensions
+* Further Extensions
 1. tags for context
 2. deadline/schedule for agenda
 * Lessons Learnt

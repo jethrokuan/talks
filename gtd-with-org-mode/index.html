@@ -154,17 +154,12 @@ Review lists as frequently as needed
 </section>
 </section>
 <section>
-<section id="slide-orgheadline13">
-<h2 id="orgheadline13">Demo</h2>
-</section>
-</section>
-<section>
-<section id="slide-orgheadline19">
-<h2 id="orgheadline19">Emacs Lisp Basics</h2>
-<div class="outline-text-2" id="text-orgheadline19">
+<section id="slide-orgheadline18">
+<h2 id="orgheadline18">Emacs Lisp Basics</h2>
+<div class="outline-text-2" id="text-orgheadline18">
 </div></section>
-<section id="slide-orgheadline14">
-<h3 id="orgheadline14">It's already there for you</h3>
+<section id="slide-orgheadline13">
+<h3 id="orgheadline13">It's already there for you</h3>
 <p>
 <code>C-h i</code> gives you access to:
 </p>
@@ -174,8 +169,8 @@ Review lists as frequently as needed
 
 </ul>
 </section>
-<section id="slide-orgheadline15">
-<h3 id="orgheadline15">Emacs Lisp is a Lisp</h3>
+<section id="slide-orgheadline14">
+<h3 id="orgheadline14">Emacs Lisp is a Lisp</h3>
 <p>
 This means there are tons of parentheses.
 </p>
@@ -190,16 +185,16 @@ This means there are tons of parentheses.
 These are your friends.
 </p>
 </section>
-<section id="slide-orgheadline16">
-<h3 id="orgheadline16">Variables</h3>
+<section id="slide-orgheadline15">
+<h3 id="orgheadline15">Variables</h3>
 <div class="org-src-container">
 
 <pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">setq</span> variable-name <span style="color: #CC9393;">"Variable"</span>)
 </pre>
 </div>
 </section>
-<section id="slide-orgheadline17">
-<h3 id="orgheadline17">Functions</h3>
+<section id="slide-orgheadline16">
+<h3 id="orgheadline16">Functions</h3>
 <p>
 Functions are created with <code>defun</code>. Evaluate with <code>C-M-x</code>.
 </p>
@@ -209,8 +204,8 @@ Functions are created with <code>defun</code>. Evaluate with <code>C-M-x</code>.
 </pre>
 </div>
 </section>
-<section id="slide-orgheadline18">
-<h3 id="orgheadline18">Lisp is list processing</h3>
+<section id="slide-orgheadline17">
+<h3 id="orgheadline17">Lisp is list processing</h3>
 <div class="org-src-container">
 
 <pre  class="src src-emacs-lisp"><span style="color: #5F7F5F;">;; </span><span style="color: #7F9F7F;">Let's store a list of names:</span>
@@ -226,12 +221,12 @@ Functions are created with <code>defun</code>. Evaluate with <code>C-M-x</code>.
 </section>
 </section>
 <section>
-<section id="slide-orgheadline27">
-<h2 id="orgheadline27">GTD-mode Specifics</h2>
-<div class="outline-text-2" id="text-orgheadline27">
+<section id="slide-orgheadline26">
+<h2 id="orgheadline26">GTD-mode Specifics</h2>
+<div class="outline-text-2" id="text-orgheadline26">
 </div></section>
-<section id="slide-orgheadline20">
-<h3 id="orgheadline20">Creating a minor mode</h3>
+<section id="slide-orgheadline19">
+<h3 id="orgheadline19">Creating a minor mode</h3>
 <div class="org-src-container">
 
 <pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">define-minor-mode</span> <span style="color: #93E0E3;">gtd-mode</span>
@@ -241,8 +236,8 @@ Functions are created with <code>defun</code>. Evaluate with <code>C-M-x</code>.
 </pre>
 </div>
 </section>
-<section id="slide-orgheadline21">
-<h3 id="orgheadline21"><code>defcustom</code> and <code>defgroup</code></h3>
+<section id="slide-orgheadline20">
+<h3 id="orgheadline20"><code>defcustom</code> and <code>defgroup</code></h3>
 <div class="org-src-container">
 
 <pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">defgroup</span> <span style="color: #7CB8BB;">gtd</span> nil
@@ -255,8 +250,8 @@ Functions are created with <code>defun</code>. Evaluate with <code>C-M-x</code>.
 </pre>
 </div>
 </section>
-<section id="slide-orgheadline22">
-<h3 id="orgheadline22">Step 1: Capture</h3>
+<section id="slide-orgheadline21">
+<h3 id="orgheadline21">Step 1: Capture</h3>
 <p>
 No need to reinvent the wheel here. Use <code>org-capture</code>.
 </p>
@@ -267,8 +262,8 @@ No need to reinvent the wheel here. Use <code>org-capture</code>.
 </pre>
 </div>
 </section>
-<section id="slide-orgheadline23">
-<h3 id="orgheadline23">Step 2: Clarify</h3>
+<section id="slide-orgheadline22">
+<h3 id="orgheadline22">Step 2: Clarify</h3>
 <div class="org-src-container">
 
 <pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">defun</span> <span style="color: #93E0E3;">gtd-clear-inbox</span> ()                                                          <span style="color: #5F7F5F;">;; </span><span style="color: #7F9F7F;">Define a function `gtd-clear-inbox`</span>
@@ -287,8 +282,8 @@ No need to reinvent the wheel here. Use <code>org-capture</code>.
 </pre>
 </div>
 </section>
-<section id="slide-orgheadline24">
-<h3 id="orgheadline24">Step 3: Organize (Part 1)</h3>
+<section id="slide-orgheadline23">
+<h3 id="orgheadline23">Step 3: Organize (Part 1)</h3>
 <p>
 The list of <code>(key, string, function)</code>.
 </p>
@@ -311,8 +306,8 @@ The list of <code>(key, string, function)</code>.
 </pre>
 </div>
 </section>
-<section id="slide-orgheadline25">
-<h3 id="orgheadline25">Step 3: Organize (Part 2)</h3>
+<section id="slide-orgheadline24">
+<h3 id="orgheadline24">Step 3: Organize (Part 2)</h3>
 <div class="org-src-container">
 
 <pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">defun</span> <span style="color: #93E0E3;">gtd-select-options</span> (options-var)
@@ -328,8 +323,8 @@ The list of <code>(key, string, function)</code>.
 </pre>
 </div>
 </section>
-<section id="slide-orgheadline26">
-<h3 id="orgheadline26">Step 3: Organize (Part 3)</h3>
+<section id="slide-orgheadline25">
+<h3 id="orgheadline25">Step 3: Organize (Part 3)</h3>
 <p>
 Modify the inbox headline, then copy it to the correct place.
 </p>
@@ -343,13 +338,13 @@ Modify the inbox headline, then copy it to the correct place.
 </section>
 </section>
 <section>
-<section id="slide-orgheadline28">
-<h2 id="orgheadline28">Demo</h2>
+<section id="slide-orgheadline27">
+<h2 id="orgheadline27">Demo</h2>
 </section>
 </section>
 <section>
-<section id="slide-orgheadline29">
-<h2 id="orgheadline29">Further extensions</h2>
+<section id="slide-orgheadline28">
+<h2 id="orgheadline28">Further Extensions</h2>
 <ol>
 <li>tags for context</li>
 <li>deadline/schedule for agenda</li>
@@ -358,12 +353,12 @@ Modify the inbox headline, then copy it to the correct place.
 </section>
 </section>
 <section>
-<section id="slide-orgheadline32">
-<h2 id="orgheadline32">Lessons Learnt</h2>
-<div class="outline-text-2" id="text-orgheadline32">
+<section id="slide-orgheadline31">
+<h2 id="orgheadline31">Lessons Learnt</h2>
+<div class="outline-text-2" id="text-orgheadline31">
 </div></section>
-<section id="slide-orgheadline30">
-<h3 id="orgheadline30">Emacs Lisp</h3>
+<section id="slide-orgheadline29">
+<h3 id="orgheadline29">Emacs Lisp</h3>
 <ol>
 <li>Emacs Lisp is scary</li>
 <li><del>Emacs</del> Lisp is powerful</li>
@@ -371,8 +366,8 @@ Modify the inbox headline, then copy it to the correct place.
 
 </ol>
 </section>
-<section id="slide-orgheadline31">
-<h3 id="orgheadline31">Writing Emacs Lisp</h3>
+<section id="slide-orgheadline30">
+<h3 id="orgheadline30">Writing Emacs Lisp</h3>
 <ol>
 <li><code>C-h f</code> is your friend</li>
 <li>namespace your functions, and use <code>nameless-mode</code></li>
@@ -388,8 +383,8 @@ Modify the inbox headline, then copy it to the correct place.
 </section>
 </section>
 <section>
-<section id="slide-orgheadline33">
-<h2 id="orgheadline33">Thank you!</h2>
+<section id="slide-orgheadline32">
+<h2 id="orgheadline32">Thank you!</h2>
 <p>
 <a href="https://github.com/jethrokuan/gtd-mode">Github</a>
 </p>
