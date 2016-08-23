@@ -226,9 +226,9 @@ Functions are created with <code>defun</code>. Evaluate with <code>C-M-x</code>.
 </section>
 </section>
 <section>
-<section id="slide-orgheadline24">
-<h2 id="orgheadline24">GTD-mode specifics</h2>
-<div class="outline-text-2" id="text-orgheadline24">
+<section id="slide-orgheadline27">
+<h2 id="orgheadline27">GTD-mode Specifics</h2>
+<div class="outline-text-2" id="text-orgheadline27">
 </div></section>
 <section id="slide-orgheadline20">
 <h3 id="orgheadline20">Creating a minor mode</h3>
@@ -287,10 +287,109 @@ No need to reinvent the wheel here. Use <code>org-capture</code>.
 </pre>
 </div>
 </section>
+<section id="slide-orgheadline24">
+<h3 id="orgheadline24">Step 3: Organize (Part 1)</h3>
+<p>
+The list of <code>(key, string, function)</code>.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">defvar</span> <span style="color: #DFAF8F;">gtd-actionable-options</span>
+  '((?p <span style="color: #CC9393;">"(p) Project"</span> gtd-refile-to-project) 
+    (?d <span style="color: #CC9393;">"(d) Delegate"</span> gtd-delegate-item)
+    (?n <span style="color: #CC9393;">"(n) Create Next-action"</span> gtd-new-next-action)
+    (?c <span style="color: #CC9393;">"(c) Calendar"</span> gtd-add-to-cal)
+    (?\ <span style="color: #CC9393;">"(SPC) DO NOW"</span> gtd-do-now))
+  <span style="color: #9FC59F;">"Options for actionables"</span>)
+
+(<span style="color: #F0DFAF; font-weight: bold;">defvar</span> <span style="color: #DFAF8F;">gtd-nonactionable-options</span>
+  '((?t <span style="color: #CC9393;">"(t) Trash"</span> gtd-trash-item)
+    (?i <span style="color: #CC9393;">"(i) Incubate"</span> gtd-incubate-item)
+    (?r <span style="color: #CC9393;">"(r) Reference"</span> gtd-reference-item))
+  <span style="color: #9FC59F;">"Options for nonactionables"</span>)
+</pre>
+</div>
+</section>
+<section id="slide-orgheadline25">
+<h3 id="orgheadline25">Step 3: Organize (Part 2)</h3>
+<div class="org-src-container">
+
+<pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">defun</span> <span style="color: #93E0E3;">gtd-select-options</span> (options-var)
+  (<span style="color: #F0DFAF; font-weight: bold;">let</span> ((options (mapconcat (<span style="color: #F0DFAF; font-weight: bold;">lambda</span> (x) (car (cdr x))) options-var <span style="color: #CC9393;">" "</span>)))
+    (<span style="color: #F0DFAF; font-weight: bold;">let</span> ((opt (read-char options)))
+      (<span style="color: #F0DFAF; font-weight: bold;">or</span> (assoc opt options-var)
+          (<span style="color: #F0DFAF; font-weight: bold;">progn</span>
+                                        <span style="color: #5F7F5F;">;</span><span style="color: #7F9F7F;">TODO: Message that option is incorrect</span>
+            (gtd-select-options options-var)))
+      (<span style="color: #F0DFAF; font-weight: bold;">dolist</span> (action options-var)
+        (<span style="color: #F0DFAF; font-weight: bold;">when</span> (equal opt (nth 0 action))
+          (funcall (nth 2 action)))))))
+</pre>
+</div>
+</section>
+<section id="slide-orgheadline26">
+<h3 id="orgheadline26">Step 3: Organize (Part 3)</h3>
+<p>
+Modify the inbox headline, then copy it to the correct place.
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">defun</span> <span style="color: #93E0E3;">gtd-refile-to-project</span> () 
+  (gtd-alter-headline <span style="color: #CC9393;">"Enter new actionable: "</span>)
+  (gtd-refile-to gtd-projects-file <span style="color: #CC9393;">"Project: "</span>))
+</pre>
+</div>
+</section>
 </section>
 <section>
-<section id="slide-orgheadline25">
-<h2 id="orgheadline25">Thank you!</h2>
+<section id="slide-orgheadline28">
+<h2 id="orgheadline28">Demo</h2>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline29">
+<h2 id="orgheadline29">Further extensions</h2>
+<ol>
+<li>tags for context</li>
+<li>deadline/schedule for agenda</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline32">
+<h2 id="orgheadline32">Lessons Learnt</h2>
+<div class="outline-text-2" id="text-orgheadline32">
+</div></section>
+<section id="slide-orgheadline30">
+<h3 id="orgheadline30">Emacs Lisp</h3>
+<ol>
+<li>Emacs Lisp is scary</li>
+<li><del>Emacs</del> Lisp is powerful</li>
+<li>Emacs Lisp is satisfying</li>
+
+</ol>
+</section>
+<section id="slide-orgheadline31">
+<h3 id="orgheadline31">Writing Emacs Lisp</h3>
+<ol>
+<li><code>C-h f</code> is your friend</li>
+<li>namespace your functions, and use <code>nameless-mode</code></li>
+<li>Quality-of-life libraries
+<ul>
+<li>dash</li>
+<li>cl-lib</li>
+<li>s</li>
+
+</ul></li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline33">
+<h2 id="orgheadline33">Thank you!</h2>
 <p>
 <a href="https://github.com/jethrokuan/gtd-mode">Github</a>
 </p>

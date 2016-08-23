@@ -108,7 +108,7 @@ Functions are created with =defun=. Evaluate with =C-M-x=.
 ;; Get a list of all but the first element with `cdr':
 (cdr list-of-names)
 #+END_SRC
-* GTD-mode specifics
+* GTD-mode Specifics
 ** Creating a minor mode
 #+BEGIN_SRC emacs-lisp
 (define-minor-mode gtd-mode
@@ -148,6 +148,60 @@ No need to reinvent the wheel here. Use =org-capture=.
         (message "Inbox clear!"))                                                    ;;   print message clear
       (save-buffer)))
 #+END_SRC
+** Step 3: Organize (Part 1)
+The list of =(key, string, function)=.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar gtd-actionable-options
+    '((?p "(p) Project" gtd-refile-to-project) 
+      (?d "(d) Delegate" gtd-delegate-item)
+      (?n "(n) Create Next-action" gtd-new-next-action)
+      (?c "(c) Calendar" gtd-add-to-cal)
+      (?\ "(SPC) DO NOW" gtd-do-now))
+    "Options for actionables")
+
+  (defvar gtd-nonactionable-options
+    '((?t "(t) Trash" gtd-trash-item)
+      (?i "(i) Incubate" gtd-incubate-item)
+      (?r "(r) Reference" gtd-reference-item))
+    "Options for nonactionables")
+#+END_SRC
+** Step 3: Organize (Part 2)
+#+BEGIN_SRC emacs-lisp
+  (defun gtd-select-options (options-var)
+    (let ((options (mapconcat (lambda (x) (car (cdr x))) options-var " ")))
+      (let ((opt (read-char options)))
+        (or (assoc opt options-var)
+            (progn
+                                          ;TODO: Message that option is incorrect
+              (gtd-select-options options-var)))
+        (dolist (action options-var)
+          (when (equal opt (nth 0 action))
+            (funcall (nth 2 action)))))))
+#+END_SRC
+** Step 3: Organize (Part 3)
+Modify the inbox headline, then copy it to the correct place.
+#+BEGIN_SRC emacs-lisp
+  (defun gtd-refile-to-project () 
+    (gtd-alter-headline "Enter new actionable: ")
+    (gtd-refile-to gtd-projects-file "Project: "))
+#+END_SRC
+* Demo
+* Further extensions
+1. tags for context
+2. deadline/schedule for agenda
+* Lessons Learnt
+** Emacs Lisp
+1. Emacs Lisp is scary
+2. +Emacs+ Lisp is powerful
+3. Emacs Lisp is satisfying
+** Writing Emacs Lisp
+1. =C-h f= is your friend
+2. namespace your functions, and use =nameless-mode=
+3. Quality-of-life libraries
+   - dash
+   - cl-lib
+   - s
 * Thank you!
 [[https://github.com/jethrokuan/gtd-mode][Github]]
 
