@@ -1,0 +1,73 @@
+#+AUTHOR:               Jethro Kuan
+#+TITLE:                Open Source, and How I Got Here
+#+EMAIL:                jethrokuan95@gmail.com
+#+LANGUAGE:             en
+#+OPTIONS:              toc:nil
+#+OPTIONS:              reveal_center:t reveal_progress:t reveal_history:t reveal_control:t
+#+OPTIONS:              reveal_rolling_links:nil reveal_keyboard:t reveal_overview:t num:nil
+#+OPTIONS:              reveal_width:1200 reveal_height:800
+#+REVEAL_HLEVEL:        1
+#+REVEAL_MARGIN:        0.0
+#+REVEAL_MIN_SCALE:     1.0
+#+REVEAL_MAX_SCALE:     1.4
+#+REVEAL_ROOT:          ../reveal.js
+#+REVEAL_THEME:         metropolis
+#+REVEAL_TRANS:         fade
+#+REVEAL_SPEED:         fast
+#+REVEAL_PLUGINS: (markdown notes)
+#+EXPORT_EXCLUDE_TAGS:  noexport
+
+
+* whoami
+- NUS CS (Y1)
+- 6 years of coding
+- 0.5 years of programming
+- [[https://github.com/jethrokuan/][@jethrokuan]]
+* ~coding != programming~
+** 
+   :PROPERTIES:
+   :reveal_background: ./pictures/iVHfwLc_2016-10-06_19-02-58_2016-10-06_20-08-36.gif
+   :END:
+** 
+   :PROPERTIES:
+   :reveal_background: ./pictures/giphy_2016-10-06_20-07-49.gif
+   :END:
+** Pay attention in school!
+- Everyone can code, but not everyone can program
+- Coding will most likely be your livelihood
+- Being able to program *distinguishes* you
+
+* $coding \cap programming \ne \phi$
+#+ATTR_HTML: width 400px
+[[file:pictures/telegram.png]]
+* 
+  [[file:pictures/timeline.png]]
+* How I got into open source
+- developer quality of life
+- productivity
+* Fisherman
+#+DOWNLOADED: https://avatars1.githubusercontent.com/u/17060082?v=3&s=200 @ 2016-10-06 17:36:09
+#+ATTR_HTML: width: 500px
+[[file:pictures/17060082_2016-10-06_17-36-09.png]]
+* What's it like maintaining my work?
+- ~2 Github issues per month
+* What's stopping you?
+1. I'm not good enough
+2. I don't have the time
+3. I've no idea what to make
+* What I've learned
+** CS-wise, lots!
+- Exposure to new and old ideas
+- "Been there, done that"
+- Community guidance
+** You don't always work with the nicest people
+- Oh My Fish DMCA takedown
+- code superiority doesn't give you the right to diminish others
+** Mistakes will be made
+- Careful what you say
+- Take responsibility
+* Where can you start?
+- Libraries you use and love
+  - Devise
+  - React
+  - etc. etc.

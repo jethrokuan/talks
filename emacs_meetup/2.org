@@ -1,0 +1,29 @@
+#+EXPORT_EXCLUDE_TAGS:  noexport
+#+AUTHOR:               Jethro Kuan
+#+TITLE:                Emacs Meetup 2
+#+EMAIL:                jethrokuan95@gmail.com
+#+LANGUAGE:             en
+#+OPTIONS:              toc:nil timestamp:nil author:nil
+#+OPTIONS:              reveal_center:t reveal_progress:t reveal_history:t reveal_control:nil
+#+OPTIONS:              reveal_mathjax:nil reveal_rolling_links:nil reveal_keyboard:t reveal_overview:t num:nil
+#+REVEAL_HLEVEL:        1
+#+REVEAL_MARGIN:        0.0
+#+REVEAL_MIN_SCALE:     1.0
+#+REVEAL_MAX_SCALE:     1.4
+#+REVEAL_ROOT:          ../reveal.js
+#+REVEAL_THEME:         metropolis
+#+REVEAL_TRANS:         fade
+#+REVEAL_SPEED:         fast
+#+REVEAL_PLUGINS:       (markdown notes)
+
+* Welcome Back!
+* Thanks again, Pivotal
+* August - September 2016
+Release of Emacs 25.1
+* Emacs 25.1: The Lowdown
+1. Xwidget support
+2. Cairo drawing
+3. Electric-quote-mode
+* Talks
+1. Running a small business in org-mode - *Peter Hoeg*
+2. BYOE

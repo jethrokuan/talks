@@ -11,7 +11,7 @@
 #+REVEAL_MIN_SCALE:     1.0
 #+REVEAL_MAX_SCALE:     1.4
 #+REVEAL_ROOT:          ../reveal.js
-#+REVEAL_THEME:         jethro
+#+REVEAL_THEME:         metropolis
 #+REVEAL_TRANS:         fade
 #+REVEAL_SPEED:         fast
 #+REVEAL_PLUGINS: (markdown notes)
