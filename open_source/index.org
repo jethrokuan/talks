@@ -43,12 +43,20 @@
 * 
   [[file:pictures/timeline.png]]
 * How I got into open source
-- developer quality of life
-- productivity
+[[file:pictures/automate-all-the-things.jpg]]
+
 * Fisherman
 #+DOWNLOADED: https://avatars1.githubusercontent.com/u/17060082?v=3&s=200 @ 2016-10-06 17:36:09
 #+ATTR_HTML: width: 500px
 [[file:pictures/17060082_2016-10-06_17-36-09.png]]
+* What's the usage like?
+** z
+- $\approx$ 1200 unique users
+[[file:pictures/zgraph.png]]
+
+** fzf
+- $\approx$ 1000 unique users
+[[file:pictures/fzfgraph.png]]
 * What's it like maintaining my work?
 - ~2 Github issues per month
 * What's stopping you?
